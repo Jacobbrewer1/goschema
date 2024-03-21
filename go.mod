@@ -3,7 +3,7 @@ module github.com/Jacobbrewer1/goschema
 go 1.22
 
 require (
-	github.com/Masterminds/sprig v2.15.0+incompatible
+	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/google/subcommands v1.2.0
 	github.com/huandu/xstrings v1.4.0
 	github.com/pingcap/tidb v2.0.7+incompatible
@@ -11,8 +11,8 @@ require (
 
 require (
 	github.com/BurntSushi/toml v0.0.0-20170626110600-a368813c5e64 // indirect
+	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.4.2 // indirect
-	github.com/aokoli/goutils v1.1.1 // indirect
 	github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973 // indirect
 	github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd // indirect
 	github.com/coreos/etcd v3.2.18+incompatible // indirect
@@ -32,6 +32,8 @@ require (
 	github.com/juju/testing v0.0.0-20180920084828-472a3e8b2073 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
+	github.com/mitchellh/copystructure v1.2.0 // indirect
+	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/ngaut/pools v0.0.0-20180318154953-b7bc8c42aac7 // indirect
 	github.com/ngaut/sync2 v0.0.0-20141008032647-7a24ed77b2ef // indirect
 	github.com/onsi/ginkgo v1.6.0 // indirect
