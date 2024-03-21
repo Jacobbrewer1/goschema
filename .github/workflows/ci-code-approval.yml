@@ -62,4 +62,4 @@ jobs:
         run: git config --global url."https://x:${GITHUB_API_TOKEN}@github.com".insteadOf "https://github.com"
 
       - name: Make
-        run: make PR-approval
+        run: make pr-approval
