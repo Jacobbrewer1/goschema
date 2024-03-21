@@ -49,8 +49,8 @@ github.com/google/uuid
 ## explicit
 # github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 ## explicit
-# github.com/huandu/xstrings v1.0.0
-## explicit
+# github.com/huandu/xstrings v1.4.0
+## explicit; go 1.12
 github.com/huandu/xstrings
 # github.com/imdario/mergo v0.3.5
 ## explicit
