@@ -60,8 +60,8 @@ require (
 	golang.org/x/crypto v0.0.0-20180621125126-a49355c7e3f8 // indirect
 	golang.org/x/net v0.0.0-20180906233101-161cd47e91fd // indirect
 	golang.org/x/sync v0.0.0-20180314180146-1d60e4601c6f // indirect
-	golang.org/x/sys v0.0.0-20180909124046-d0be0721c37e // indirect
-	golang.org/x/text v0.3.0 // indirect
+	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f // indirect
+	golang.org/x/text v0.3.8 // indirect
 	google.golang.org/genproto v0.0.0-20180706232955-8b2cc369ab52 // indirect
 	google.golang.org/grpc v1.13.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
