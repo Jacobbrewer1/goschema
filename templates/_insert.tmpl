@@ -1,0 +1,30 @@
+{{- define "insert" -}}
+{{- $struct := .Name | structify -}}
+// Insert inserts the {{ $struct }} to the database.
+func (m *{{ $struct }}) Insert(db DB) error {
+    {{ $autoinc := autoinc_column . -}}
+    {{- $cols := non_autoinc_columns . -}}
+    const sqlstr = "INSERT INTO {{ .Name }} (" +
+        "{{ range $i, $column := $cols }}{{ if $i }},{{ end }}`{{ $column.Name }}`{{ end }}" +
+        ") VALUES (" +
+        "{{ range $i, $column := $cols }}{{ if $i }},{{ end }}?{{ end }}" +
+        ")"
+
+    DBLog(sqlstr, {{ range $i, $column := $cols }}{{ if $i }}, {{ end }}m.{{ $column.Name | structify }}{{ end }})
+    {{ if $autoinc }}res{{ else }}_{{ end }}, err := db.Exec(sqlstr, {{ range $i, $column := $cols }}{{ if $i }}, {{ end }}m.{{ $column.Name | structify }}{{ end }})
+    if err != nil {
+        return err
+    }
+
+    {{ with $autoinc -}}
+    id, err := res.LastInsertId()
+    if err != nil {
+        return err
+    }
+
+    m.{{ .Name | structify }} = {{ template "type" . }}(id)
+    {{- end }}
+
+    return nil
+}
+{{- end -}}
