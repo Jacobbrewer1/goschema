@@ -1,15 +1,15 @@
 # github.com/BurntSushi/toml v0.0.0-20170626110600-a368813c5e64
 ## explicit
 github.com/BurntSushi/toml
+# github.com/Masterminds/goutils v1.1.1
+## explicit
+github.com/Masterminds/goutils
 # github.com/Masterminds/semver v1.4.2
 ## explicit
 github.com/Masterminds/semver
-# github.com/Masterminds/sprig v2.15.0+incompatible
+# github.com/Masterminds/sprig v2.22.0+incompatible
 ## explicit
 github.com/Masterminds/sprig
-# github.com/aokoli/goutils v1.1.1
-## explicit
-github.com/aokoli/goutils
 # github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973
 ## explicit
 github.com/beorn7/perks/quantile
@@ -67,6 +67,12 @@ github.com/juju/errors
 # github.com/matttproud/golang_protobuf_extensions v1.0.1
 ## explicit
 github.com/matttproud/golang_protobuf_extensions/pbutil
+# github.com/mitchellh/copystructure v1.2.0
+## explicit; go 1.15
+github.com/mitchellh/copystructure
+# github.com/mitchellh/reflectwalk v1.0.2
+## explicit
+github.com/mitchellh/reflectwalk
 # github.com/ngaut/pools v0.0.0-20180318154953-b7bc8c42aac7
 ## explicit
 # github.com/ngaut/sync2 v0.0.0-20141008032647-7a24ed77b2ef
