@@ -1,0 +1,14 @@
+{{- define "tags" -}}
+    `db:"{{- .Name -}}
+    {{- if .AutoIncrementing -}}
+    ,autoinc
+    {{- end -}}
+    {{- if .InPrimaryKey -}}
+    ,pk
+    {{- end -}}
+    {{ $not_nullable := not .Nullable }}
+    {{- if and .Default $not_nullable -}}
+    ,default
+    {{- end -}}
+    "`
+{{- end -}}
