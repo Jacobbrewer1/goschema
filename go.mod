@@ -5,7 +5,7 @@ go 1.22
 require (
 	github.com/Masterminds/sprig v2.15.0+incompatible
 	github.com/google/subcommands v1.2.0
-	github.com/huandu/xstrings v1.0.0
+	github.com/huandu/xstrings v1.4.0
 	github.com/pingcap/tidb v2.0.7+incompatible
 )
 
