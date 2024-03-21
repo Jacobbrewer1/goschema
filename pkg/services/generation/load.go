@@ -21,7 +21,7 @@ func LoadSQL(paths ...string) ([]*models.Table, error) {
 			return nil, err
 		}
 		for _, m := range matches {
-			matchedTables := make([]*models.Table, 0)
+			var matchedTables []*models.Table
 			if fi, err := os.Stat(m); err != nil {
 				return nil, err
 			} else if fi.IsDir() {
