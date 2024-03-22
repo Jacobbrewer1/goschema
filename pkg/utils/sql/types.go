@@ -9,8 +9,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/go-sql-driver/mysql"
 )
 
 var null = []byte{0x6e, 0x75, 0x6c, 0x6c}
@@ -408,5 +406,5 @@ func (r *NullTime) parse(src string) error {
 
 // NewNullTime returns a valid new NullTime for a given time.Time value.
 func NewNullTime(t time.Time) *NullTime {
-	return &NullTime{NullTime: mysql.NullTime{Time: t, Valid: true}}
+	return &NullTime{NullTime: sql.NullTime{Time: t, Valid: true}}
 }
