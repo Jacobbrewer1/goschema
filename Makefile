@@ -7,10 +7,10 @@ linux: clean
 	GOOS=linux GOARCH=amd64 go build -o bin/linux -ldflags '-X main.Commit=$(hash) -X main.Date=$(DATE)' ./cmd/schema
 windows: clean
 	@echo "Building for windows"
-	GOOS=windows GOARCH=amd64 go build -o bin/windows ./cmd/schema
+	GOOS=windows GOARCH=amd64 go build -o bin/windows -ldflags '-X main.Commit=$(hash) -X main.Date=$(DATE)' ./cmd/schema
 mac: clean
 	@echo "Building for mac"
-	GOOS=darwin GOARCH=amd64 go build -o bin/mac ./cmd/schema
+	GOOS=darwin GOARCH=amd64 go build -o bin/mac -ldflags '-X main.Commit=$(hash) -X main.Date=$(DATE)' ./cmd/schema
 clean:
 	@echo "Cleaning up"
 	# Remove the bin directory
