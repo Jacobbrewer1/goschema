@@ -1,6 +1,10 @@
+# Define variables
+hash = $(shell git rev-parse --short HEAD)
+DATE = $(shell date -u +'%Y-%m-%dT%H:%M:%SZ')
+
 linux: clean
 	@echo "Building for linux"
-	GOOS=linux GOARCH=amd64 go build -o bin/linux ./cmd/schema
+	GOOS=linux GOARCH=amd64 go build -o bin/linux -ldflags '-X main.Commit=$(hash) -X main.Date=$(DATE)' ./cmd/schema
 windows: clean
 	@echo "Building for windows"
 	GOOS=windows GOARCH=amd64 go build -o bin/windows ./cmd/schema

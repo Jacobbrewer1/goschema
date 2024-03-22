@@ -16,6 +16,7 @@ func main() {
 	subcommands.Register(subcommands.FlagsCommand(), "")
 	subcommands.Register(subcommands.CommandsCommand(), "")
 
+	subcommands.Register(new(versionCmd), "")
 	subcommands.Register(new(generateCmd), "")
 
 	flag.Parse()
