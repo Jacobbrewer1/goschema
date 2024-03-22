@@ -336,7 +336,7 @@ func NewNullDuration(t time.Duration) *NullDuration {
 // NullTime represents a nullable string type which supports json.Marshaler,
 // sql.Scanner, and sql/driver.Valuer interfaces.
 type NullTime struct {
-	mysql.NullTime
+	sql.NullTime
 }
 
 // MarshalJSON implements json.Marshaller.
