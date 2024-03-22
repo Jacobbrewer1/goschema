@@ -37,8 +37,8 @@ func (g *generateCmd) Usage() string {
 
 func (g *generateCmd) SetFlags(f *flag.FlagSet) {
 	f.StringVar(&g.templatesLocation, "templates", "./templates/*.tmpl", "The location of the templates to use.")
-	f.StringVar(&g.outputLocation, "output", ".", "The location to write the generated files to.")
-	f.StringVar(&g.sqlLocation, "sql", "./*.sql", "The location of the SQL files to use.")
+	f.StringVar(&g.outputLocation, "out", ".", "The location to write the generated files to.")
+	f.StringVar(&g.sqlLocation, "sql", "./pkg/models/*.sql", "The location of the SQL files to use.")
 }
 
 func (g *generateCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {

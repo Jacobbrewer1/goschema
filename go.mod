@@ -4,12 +4,15 @@ go 1.22
 
 require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
+	github.com/go-sql-driver/mysql v1.8.0
 	github.com/google/subcommands v1.2.0
 	github.com/huandu/xstrings v1.4.0
 	github.com/pingcap/tidb v2.0.7+incompatible
+	github.com/stretchr/testify v1.4.0
 )
 
 require (
+	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/BurntSushi/toml v0.0.0-20170626110600-a368813c5e64 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.4.2 // indirect
@@ -19,6 +22,7 @@ require (
 	github.com/coreos/etcd v3.2.18+incompatible // indirect
 	github.com/cznic/mathutil v0.0.0-20180504122225-ca4c9f2c1369 // indirect
 	github.com/cznic/sortutil v0.0.0-20150617083342-4c7342852e65 // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/golang/snappy v0.0.0-20180518054509-2e65f85255db // indirect
 	github.com/google/btree v0.0.0-20180813153112-4030bb1f1f0c // indirect
@@ -44,6 +48,7 @@ require (
 	github.com/pingcap/pd v2.0.5+incompatible // indirect
 	github.com/pingcap/tipb v0.0.0-20180621072330-658ea9c14169 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_golang v1.11.1 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.26.0 // indirect
@@ -63,6 +68,7 @@ require (
 	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/mgo.v2 v2.0.0-20180705113604-9856a29383ce // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0-20170531160350-a96e63847dc3 // indirect
+	gopkg.in/yaml.v2 v2.3.0 // indirect
 )
 
 replace github.com/pingcap/tidb v2.0.7+incompatible => github.com/darkliquid/tidb v2.0.6-0.20180920112946-471a025d5769+incompatible
