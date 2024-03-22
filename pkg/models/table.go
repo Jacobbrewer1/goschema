@@ -108,11 +108,8 @@ func (t *Table) setTableOptions(ct *ast.CreateTableStmt) error {
 		switch opt.Tp {
 		case ast.TableOptionComment:
 			t.Comment = opt.StrValue
-		case ast.TableOptionEngine,
-			ast.TableOptionCharset:
-			// ignore
 		default:
-			slog.Warn("unknown table option", slog.Int("type", int(opt.Tp)))
+			// ignore
 		}
 	}
 

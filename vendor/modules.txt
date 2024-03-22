@@ -1,3 +1,7 @@
+# filippo.io/edwards25519 v1.1.0
+## explicit; go 1.20
+filippo.io/edwards25519
+filippo.io/edwards25519/field
 # github.com/BurntSushi/toml v0.0.0-20170626110600-a368813c5e64
 ## explicit
 github.com/BurntSushi/toml
@@ -26,6 +30,12 @@ github.com/codahale/hdrhistogram
 github.com/cznic/mathutil
 # github.com/cznic/sortutil v0.0.0-20150617083342-4c7342852e65
 ## explicit
+# github.com/davecgh/go-spew v1.1.1
+## explicit
+github.com/davecgh/go-spew/spew
+# github.com/go-sql-driver/mysql v1.8.0
+## explicit; go 1.18
+github.com/go-sql-driver/mysql
 # github.com/golang/protobuf v1.5.3
 ## explicit; go 1.9
 github.com/golang/protobuf/jsonpb
@@ -144,6 +154,9 @@ github.com/pingcap/tipb/go-binlog
 # github.com/pkg/errors v0.9.1
 ## explicit
 github.com/pkg/errors
+# github.com/pmezard/go-difflib v1.0.0
+## explicit
+github.com/pmezard/go-difflib/difflib
 # github.com/prometheus/client_golang v1.11.1
 ## explicit; go 1.13
 github.com/prometheus/client_golang/prometheus
@@ -167,6 +180,11 @@ github.com/sirupsen/logrus
 # github.com/spaolacci/murmur3 v0.0.0-20170819071325-9f5d223c6079
 ## explicit
 github.com/spaolacci/murmur3
+# github.com/stretchr/testify v1.4.0
+## explicit
+github.com/stretchr/testify/assert
+github.com/stretchr/testify/require
+github.com/stretchr/testify/suite
 # github.com/twinj/uuid v1.0.0
 ## explicit
 # github.com/uber-go/atomic v1.3.2
@@ -320,3 +338,6 @@ google.golang.org/protobuf/types/known/timestamppb
 # gopkg.in/natefinch/lumberjack.v2 v2.0.0-20170531160350-a96e63847dc3
 ## explicit
 gopkg.in/natefinch/lumberjack.v2
+# gopkg.in/yaml.v2 v2.3.0
+## explicit
+gopkg.in/yaml.v2

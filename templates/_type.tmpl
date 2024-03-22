@@ -136,13 +136,13 @@
         {{- end -}}
     {{- else if eq .Type "year" -}}
         {{- if .Nullable -}}
-            mysql.NullTime
+            sql.NullTime
         {{- else -}}
             time.Time
         {{- end -}}
     {{- else if eq .Type "date" -}}
         {{- if .Nullable -}}
-            mysql.NullTime
+            sql.NullTime
         {{- else -}}
             time.Time
         {{- end -}}
@@ -154,13 +154,13 @@
         {{- end -}}
     {{- else if eq .Type "datetime" -}}
         {{- if .Nullable -}}
-            mysql.NullTime
+            sql.NullTime
         {{- else -}}
             time.Time
         {{- end -}}
     {{- else if eq .Type "timestamp" -}}
         {{- if .Nullable -}}
-            mysql.NullTime
+            sql.NullTime
         {{- else -}}
             time.Time
         {{- end -}}

@@ -75,6 +75,7 @@ func (c *Column) setOptions(col *ast.ColumnDef) error {
 		case ast.ColumnOptionPrimaryKey:
 			c.InPrimaryKey = true
 			c.InUniqueKey = true
+			c.Nullable = false // Primary keys are not nullable
 		case ast.ColumnOptionUniqKey:
 			c.InUniqueKey = true
 		default:
