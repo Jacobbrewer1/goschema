@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/Jacobbrewer1/goschema/pkg/models"
 	"github.com/pingcap/tidb/ast"
@@ -52,6 +53,19 @@ func parseSQL(p *parser.Parser, path string) ([]*models.Table, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	// Loop through each line and remove any `with system versioning` clauses
+	lines := strings.Split(string(sql), "\n")
+	newSql := ""
+	for i, line := range lines {
+		if strings.Contains(line, "with system versioning") {
+			newSql = strings.ReplaceAll(line, "with system versioning", "")
+		} else {
+			newSql = line
+		}
+		lines[i] = newSql
+	}
+	sql = []byte(strings.Join(lines, "\n"))
 
 	stmts, err := p.Parse(string(sql), "", "")
 	if err != nil {
