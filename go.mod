@@ -8,7 +8,11 @@ require (
 	github.com/google/subcommands v1.2.0
 	github.com/huandu/xstrings v1.4.0
 	github.com/pingcap/tidb v2.0.7+incompatible
+<<<<<<< HEAD
 	github.com/stretchr/testify v1.4.0
+=======
+	github.com/stretchr/testify v1.9.0
+>>>>>>> origin/main
 )
 
 require (
@@ -59,16 +63,20 @@ require (
 	github.com/uber-go/atomic v1.3.2 // indirect
 	github.com/uber/jaeger-client-go v2.14.0+incompatible // indirect
 	github.com/uber/jaeger-lib v1.5.0 // indirect
-	golang.org/x/crypto v0.17.0 // indirect
-	golang.org/x/net v0.17.0 // indirect
-	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/crypto v0.21.0 // indirect
+	golang.org/x/net v0.23.0 // indirect
+	golang.org/x/sys v0.18.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
 	google.golang.org/grpc v1.56.3 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/mgo.v2 v2.0.0-20180705113604-9856a29383ce // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0-20170531160350-a96e63847dc3 // indirect
+<<<<<<< HEAD
 	gopkg.in/yaml.v2 v2.3.0 // indirect
+=======
+	gopkg.in/yaml.v3 v3.0.1 // indirect
+>>>>>>> origin/main
 )
 
 replace github.com/pingcap/tidb v2.0.7+incompatible => github.com/darkliquid/tidb v2.0.6-0.20180920112946-471a025d5769+incompatible
