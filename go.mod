@@ -4,19 +4,13 @@ go 1.22
 
 require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
-	github.com/go-sql-driver/mysql v1.8.0
 	github.com/google/subcommands v1.2.0
 	github.com/huandu/xstrings v1.4.0
 	github.com/pingcap/tidb v2.0.7+incompatible
-<<<<<<< HEAD
-	github.com/stretchr/testify v1.4.0
-=======
 	github.com/stretchr/testify v1.9.0
->>>>>>> origin/main
 )
 
 require (
-	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/BurntSushi/toml v0.0.0-20170626110600-a368813c5e64 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.4.2 // indirect
@@ -72,11 +66,7 @@ require (
 	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/mgo.v2 v2.0.0-20180705113604-9856a29383ce // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0-20170531160350-a96e63847dc3 // indirect
-<<<<<<< HEAD
-	gopkg.in/yaml.v2 v2.3.0 // indirect
-=======
 	gopkg.in/yaml.v3 v3.0.1 // indirect
->>>>>>> origin/main
 )
 
 replace github.com/pingcap/tidb v2.0.7+incompatible => github.com/darkliquid/tidb v2.0.6-0.20180920112946-471a025d5769+incompatible
