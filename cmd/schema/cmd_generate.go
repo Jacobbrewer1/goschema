@@ -69,7 +69,7 @@ func (g *generateCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...interface
 		return subcommands.ExitFailure
 	}
 
-	err = generation.RenderTemplates(tables, g.templatesLocation, g.outputLocation)
+	err = generation.RenderTemplates(tables, g.templatesLocation, g.outputLocation, g.fileExtensionPrefix)
 	if err != nil {
 		slog.Error("Error rendering templates", slog.String("templatesLocation", g.templatesLocation), slog.String("outputLocation", g.outputLocation), slog.String("error", err.Error()))
 		return subcommands.ExitFailure

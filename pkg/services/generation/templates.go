@@ -38,6 +38,10 @@ func RenderTemplates(tables []*models.Table, templatesLoc, outputLoc string, fil
 func generate(t *templateInfo, tmpl *template.Template, outputLoc string, fileExtensionPrefix string) error {
 	ext := ".go"
 	if fileExtensionPrefix != "" {
+		// Add a period if it's not already there
+		if fileExtensionPrefix[0] != '.' {
+			fileExtensionPrefix = "." + fileExtensionPrefix
+		}
 		ext = fileExtensionPrefix + ext
 	}
 
