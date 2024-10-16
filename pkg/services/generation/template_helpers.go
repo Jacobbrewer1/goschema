@@ -124,6 +124,10 @@ func nonIdentityColumns(t *models.Table) []*models.Column {
 // by following golint conventions
 func structify(s string) string {
 	s = xstrings.ToCamelCase(s)
+
+	// Capitalize the first letter
+	s = xstrings.FirstRuneToUpper(s)
+
 	return s
 }
 
