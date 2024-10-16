@@ -2,8 +2,11 @@
 {{- $struct := .Name | structify -}}
 // Update updates the {{ $struct }} in the database.
 func (m *{{ $struct }}) Update(db DB) error {
+    t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("update_{{ $struct | structify -}}"))
+    defer t.ObserveDuration()
+
     {{ $cols := non_identity_columns . -}}
-    {{ $wheres := identity_columns . -}}
+    {{- $wheres := identity_columns . -}}
     const sqlstr = "UPDATE {{ .Name }} " +
         "SET {{ range $i, $column := $cols }}{{ if $i }}, {{ end }}`{{ $column.Name }}` = ?{{ end }} " +
         "WHERE {{ range $i, $column := $wheres }}{{ if $i }} AND {{ end }}`{{ $column.Name }}` = ?{{ end }}"

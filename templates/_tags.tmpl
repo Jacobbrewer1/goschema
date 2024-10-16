@@ -6,8 +6,7 @@
     {{- if .InPrimaryKey -}}
     ,pk
     {{- end -}}
-    {{ $not_nullable := not .Nullable }}
-    {{- if and .Default $not_nullable -}}
+    {{- if .HasDefault -}}
     ,default
     {{- end -}}
     "`

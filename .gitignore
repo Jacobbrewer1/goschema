@@ -19,9 +19,19 @@
 
 # Go workspace file
 go.work
+go.work.sum
+
+# env file
+.env
 
 # Intellij Idea
 .idea/
 
-# Ignore the binary directory
-bin/
+# Ignore all config files
+***/config.json
+
+# Ignore all binary files
+**/bin/
+
+# Ignore all tar files
+**/*.tar

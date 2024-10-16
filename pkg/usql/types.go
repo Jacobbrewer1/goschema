@@ -1,4 +1,4 @@
-package sql
+package usql
 
 import (
 	"bytes"
@@ -221,6 +221,10 @@ func NewNullString(s string) *NullString {
 
 // Enum represents non-nullable enum values in sql
 type Enum string
+
+func NewEnum(s string) Enum {
+	return Enum(s)
+}
 
 // NullEnum represents nullable enum values in sql
 type NullEnum NullString
