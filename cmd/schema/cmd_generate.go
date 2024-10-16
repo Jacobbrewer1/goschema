@@ -19,6 +19,9 @@ type generateCmd struct {
 
 	// sqlLocation is the location of the SQL files to use.
 	sqlLocation string
+
+	// fileExtensionPrefix is the prefix to add to the generated file extension.
+	fileExtensionPrefix string
 }
 
 func (g *generateCmd) Name() string {
@@ -39,6 +42,7 @@ func (g *generateCmd) SetFlags(f *flag.FlagSet) {
 	f.StringVar(&g.templatesLocation, "templates", "./templates/*.tmpl", "The location of the templates to use.")
 	f.StringVar(&g.outputLocation, "out", ".", "The location to write the generated files to.")
 	f.StringVar(&g.sqlLocation, "sql", "./pkg/models/*.sql", "The location of the SQL files to use.")
+	f.StringVar(&g.fileExtensionPrefix, "extension", "", "The prefix to add to the generated file extension.")
 }
 
 func (g *generateCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
@@ -65,7 +69,7 @@ func (g *generateCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...interface
 		return subcommands.ExitFailure
 	}
 
-	err = generation.RenderTemplates(tables, g.templatesLocation, g.outputLocation)
+	err = generation.RenderTemplates(tables, g.templatesLocation, g.outputLocation, g.fileExtensionPrefix)
 	if err != nil {
 		slog.Error("Error rendering templates", slog.String("templatesLocation", g.templatesLocation), slog.String("outputLocation", g.outputLocation), slog.String("error", err.Error()))
 		return subcommands.ExitFailure
