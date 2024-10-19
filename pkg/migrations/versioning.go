@@ -46,54 +46,6 @@ func NewVersioning(db *sqlx.DB, migrationLocation string) Versioning {
 	}
 }
 
-func (v *versioning) createOrAppendVersion(version string) error {
-	if err := v.createTableIfNotExists(); err != nil {
-		return fmt.Errorf("error checking or creating migration tables: %w", err)
-	}
-
-	// See if the version exists in the database.
-	exists := false
-	err := v.db.Get(&exists, "SELECT EXISTS (SELECT 1 FROM "+versionTable+" WHERE version = ?)", version)
-	if err != nil {
-		return fmt.Errorf("error checking if version exists: %w", err)
-	}
-
-	if exists {
-		// Is the version already the current version? Or is it below the current version?
-		// If the version is below the current version, we don't need to do anything.
-		current := false
-		err = v.db.Get(&current, "SELECT isCurrent FROM "+versionTable+" WHERE version = ?", version)
-		if err != nil {
-			return fmt.Errorf("error getting current version: %w", err)
-		}
-
-		if current {
-			return nil
-		}
-	}
-
-	// The version does not exist or is not the current version.
-	// We need to update the current version to false for all versions.
-	_, err = v.db.Exec("UPDATE " + versionTable + " SET isCurrent = false WHERE isCurrent = true")
-	if err != nil {
-		return fmt.Errorf("error updating current version: %w", err)
-	}
-
-	// Insert the new version.
-	_, err = v.db.Exec("INSERT INTO "+versionTable+" (version, current) VALUES (?, true)", version)
-	if err != nil {
-		return fmt.Errorf("error inserting version: %w", err)
-	}
-
-	// Insert the version into the history table.
-	_, err = v.db.Exec("INSERT INTO "+historyTable+" (version, action, created_at) VALUES (?, ?, ?)", version, up, time.Now().UTC())
-	if err != nil {
-		return fmt.Errorf("error inserting version into history: %w", err)
-	}
-
-	return nil
-}
-
 func (v *versioning) createTableIfNotExists() error {
 	schema, err := v.getSchema()
 	if err != nil {
