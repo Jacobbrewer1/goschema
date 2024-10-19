@@ -36,6 +36,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ vars.GO_VERSION }}
+          cache-dependency-path: "**/*.sum"
+
+      - name: Build binary
+        run: go build -o bin/goschema ./cmd/goschema/main.go
+
       - name: Create Changelog
         run: |
           wget "https://github.com/clog-tool/clog-cli/releases/download/v0.9.3/clog-v0.9.3-x86_64-unknown-linux-gnu.tar.gz"
@@ -76,3 +84,4 @@ jobs:
           prerelease: false
           generate_release_notes: false
           make_latest: true
+          files: "bin/goschema"
