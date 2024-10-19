@@ -42,7 +42,7 @@ jobs:
           cache-dependency-path: "**/*.sum"
 
       - name: Build binary
-        run: go build -o bin/goschema ./cmd/schema/main.go
+        run: go build -o bin/goschema ./cmd/schema
 
       - name: Create Changelog
         run: |
