@@ -1,3 +1,7 @@
+# filippo.io/edwards25519 v1.1.0
+## explicit; go 1.20
+filippo.io/edwards25519
+filippo.io/edwards25519/field
 # github.com/BurntSushi/toml v0.0.0-20170626110600-a368813c5e64
 ## explicit
 github.com/BurntSushi/toml
@@ -29,6 +33,9 @@ github.com/cznic/mathutil
 # github.com/davecgh/go-spew v1.1.1
 ## explicit
 github.com/davecgh/go-spew/spew
+# github.com/go-sql-driver/mysql v1.8.1
+## explicit; go 1.18
+github.com/go-sql-driver/mysql
 # github.com/golang/protobuf v1.5.3
 ## explicit; go 1.9
 github.com/golang/protobuf/jsonpb

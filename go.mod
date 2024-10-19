@@ -4,6 +4,7 @@ go 1.22
 
 require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
+	github.com/go-sql-driver/mysql v1.8.1
 	github.com/google/subcommands v1.2.0
 	github.com/huandu/xstrings v1.5.0
 	github.com/jmoiron/sqlx v1.4.0
@@ -13,6 +14,7 @@ require (
 )
 
 require (
+	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/BurntSushi/toml v0.0.0-20170626110600-a368813c5e64 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.4.2 // indirect
