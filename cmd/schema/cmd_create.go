@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Jacobbrewer1/goschema/pkg/migrations"
 	"github.com/google/subcommands"
 )
 
@@ -56,7 +57,7 @@ func (c *createCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...interface{}
 	// The name is the name of the migration with spaces as underscores
 
 	now := time.Now()
-	name := fmt.Sprintf("%s_%s", now.Format("20060102150405"), strings.TrimSpace(c.name))
+	name := fmt.Sprintf("%s_%s", now.Format(migrations.FilePrefix), strings.TrimSpace(c.name))
 	name = strings.ReplaceAll(name, " ", "_")
 
 	upName := fmt.Sprintf("%s.up.sql", name)
