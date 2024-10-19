@@ -96,6 +96,12 @@ func (c *createCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...interface{}
 }
 
 func createFile(name string) error {
+	// Create the path if it does not exist.
+	dir := filepath.Dir(name)
+	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
+		return fmt.Errorf("error creating path: %w", err)
+	}
+
 	f, err := os.Create(name)
 	if err != nil {
 		return fmt.Errorf("error creating file: %w", err)

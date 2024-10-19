@@ -6,6 +6,7 @@ import (
 	"io"
 	"log/slog"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -96,8 +97,11 @@ func (v *versioning) migrate(f os.DirEntry, direction string) error {
 		return fmt.Errorf("invalid direction: %s", direction)
 	}
 
+	// Get the absolute path of the file as the file may be in a different directory.
+	absPath := filepath.Join(v.migrationLocation, f.Name())
+
 	// Open the file.
-	file, err := os.Open(f.Name())
+	file, err := os.Open(absPath)
 	if err != nil {
 		return fmt.Errorf("error opening file: %w", err)
 	}
