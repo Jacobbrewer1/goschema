@@ -56,7 +56,7 @@ func (c *createCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...interface{}
 	// The timestamp is the current time in the format YYYYMMDDHHMMSS
 	// The name is the name of the migration with spaces as underscores
 
-	now := time.Now()
+	now := time.Now().UTC()
 	name := fmt.Sprintf("%s_%s", now.Format(migrations.FilePrefix), strings.TrimSpace(c.name))
 	name = strings.ReplaceAll(name, " ", "_")
 

@@ -46,6 +46,7 @@ func (v *versioning) MigrateUp() error {
 	}
 
 	// Migrate up.
+	count := 0
 	for _, f := range orderedFiles {
 		slog.Debug(fmt.Sprintf("Migrating up: %s", f.Name()))
 
@@ -67,10 +68,15 @@ func (v *versioning) MigrateUp() error {
 				return fmt.Errorf("error parsing current version: %w", err)
 			}
 
-			if parsed.Before(currentParsed) {
+			if parsed.Before(currentParsed) || parsed.Equal(currentParsed) {
 				continue
 			}
 		}
+
+		if v.steps > 0 && count == v.steps {
+			break
+		}
+		count++
 
 		// Migrate up.
 		if err := v.migrate(f, up); err != nil {
