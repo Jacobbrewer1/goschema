@@ -37,12 +37,16 @@ type versioning struct {
 
 	// migrationLocation is the location of the migrations.
 	migrationLocation string
+
+	// steps is the number of steps to migrate.
+	steps int
 }
 
-func NewVersioning(db *sqlx.DB, migrationLocation string) Versioning {
+func NewVersioning(db *sqlx.DB, migrationLocation string, steps int) Versioning {
 	return &versioning{
 		db:                db,
 		migrationLocation: migrationLocation,
+		steps:             steps,
 	}
 }
 
