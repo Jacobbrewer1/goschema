@@ -43,7 +43,7 @@ jobs:
       - name: See if the database connection string is available
         id: db-connection
         run: |
-          if [ "${{ secrets.DATABASE_URL }}" ==" ]; then
+          if [ "${{ secrets.DATABASE_URL }}" == "" ]; then
             echo "No DATABASE_URL secret set. Trying to authenticate with Vault..."
           
             if [ "${{ secrets.VAULT_ADDR }}" == "" ]; then
