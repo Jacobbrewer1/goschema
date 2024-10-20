@@ -1,4 +1,4 @@
-module github.com/Jacobbrewer1/goschema
+module github.com/jacobbrewer1/goschema
 
 go 1.22
 

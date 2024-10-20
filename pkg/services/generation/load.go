@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/Jacobbrewer1/goschema/pkg/models"
+	"github.com/jacobbrewer1/goschema/pkg/models"
 	"github.com/pingcap/tidb/ast"
 	"github.com/pingcap/tidb/parser"
 )

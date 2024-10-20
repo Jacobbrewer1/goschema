@@ -6,8 +6,8 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/Jacobbrewer1/goschema/pkg/models"
 	"github.com/huandu/xstrings"
+	"github.com/jacobbrewer1/goschema/pkg/models"
 )
 
 // Helpers defines the map of functions exposed to generation templates

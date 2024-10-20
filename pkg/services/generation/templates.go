@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"text/template"
 
-	"github.com/Jacobbrewer1/goschema/pkg/models"
+	"github.com/jacobbrewer1/goschema/pkg/models"
 	"github.com/Masterminds/sprig"
 	"github.com/huandu/xstrings"
 )
