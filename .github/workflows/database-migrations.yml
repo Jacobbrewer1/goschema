@@ -62,7 +62,7 @@ jobs:
             chmod +x vaultdb
             mv vaultdb /usr/local/bin
           
-            export DATABASE_URL=$(vaultdb -addr=${{ secrets.VAULT_ADDR }} -user=${{ secrets.VAULT_USER }} -pass=${{ secrets.VAULT_PASS }} -path=${{ secrets.VAULT_PATH }}) -host=${{ secrets.DATABSE_HOST }} -schema=${{ secrets.DATABASE_SCHEMA }}
+            export DATABASE_URL=$(vaultdb -addr="${{ secrets.VAULT_ADDR }}" -user="${{ secrets.VAULT_USER }}" -pass="${{ secrets.VAULT_PASS }}" -path="${{ secrets.VAULT_PATH }}" -host="${{ secrets.DATABASE_HOST }}" -schema="${{ secrets.DATABASE_SCHEMA }}")
             if [ "${{ DATABASE_URL }}" == "" ]; then
               echo "Failed to authenticate with Vault. Exiting..."
               exit 1
