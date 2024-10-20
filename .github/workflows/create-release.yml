@@ -41,8 +41,10 @@ jobs:
           go-version: ${{ vars.GO_VERSION }}
           cache-dependency-path: "**/*.sum"
 
-      - name: Build binary
-        run: go build -o bin/goschema ./cmd/schema
+      - name: Build binaries
+        run: |
+          go build -o bin/goschema ./cmd/schema
+          go build -o bin/vaultdb ./cmd/vaultdb
 
       - name: Create Changelog
         run: |
@@ -84,4 +86,4 @@ jobs:
           prerelease: false
           generate_release_notes: false
           make_latest: true
-          files: "bin/goschema"
+          files: "bin/*"

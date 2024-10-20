@@ -1,0 +1,95 @@
+name: "Database Migrations"
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'What action should be taken?'
+        required: true
+        type: choice
+        default: 'up'
+        options:
+          - 'up'
+          - 'down'
+      steps:
+        description: 'How many migrations should be applied? (0 for all)'
+        required: true
+        type: number
+        default: 0
+  workflow_call:
+    inputs:
+      action:
+        description: 'What action should be taken?'
+        required: true
+        type: string
+        default: 'up'
+      steps:
+        description: 'How many migrations should be applied? (0 for all)'
+        required: true
+        type: number
+
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  migrate:
+    name: Migrate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: See if the database connection string is available
+        id: db-connection
+        run: |
+          if [ "${{ secrets.DATABASE_URL }}" ==" ]; then
+            echo "No DATABASE_URL secret set. Trying to authenticate with Vault..."
+          
+            if [ "${{ secrets.VAULT_ADDR }}" == "" ]; then
+              echo "No VAULT_ADDR secret set. Exiting..."
+              exit 1
+            elif [ "${{ secrets.VAULT_USER }}" == "" ]; then
+              echo "No VAULT_USER secret set. Exiting..."
+              exit 1
+            elif [ "${{ secrets.VAULT_PASS }}" == "" ]; then
+              echo "No VAULT_PASS secret set. Exiting..."
+              exit 1
+            fi
+          
+            url=$(curl -s -X GET https://api.github.com/repos/jacobbrewer1/goschema/releases/latest | jq '.assets[] | select(.name == "vaultdb")' | jq -r .browser_download_url)
+            wget $url
+            chmod +x vaultdb
+            mv vaultdb /usr/local/bin
+          
+            export DATABASE_URL=$(vaultdb -addr=${{ secrets.VAULT_ADDR }} -user=${{ secrets.VAULT_USER }} -pass=${{ secrets.VAULT_PASS }} -path=${{ secrets.VAULT_PATH }}) -host=${{ secrets.DATABSE_HOST }} -schema=${{ secrets.DATABASE_SCHEMA }}
+            if [ "${{ DATABASE_URL }}" == "" ]; then
+              echo "Failed to authenticate with Vault. Exiting..."
+              exit 1
+            fi
+          fi
+          
+          echo "DATABASE_URL is set. Continuing..."
+
+      - name: Install GoSchema
+        run: |
+          url=$(curl -s -X GET https://api.github.com/repos/jacobbrewer1/goschema/releases/latest | jq '.assets[] | select(.name == "goschema")' | jq -r .browser_download_url)
+          wget $url
+          chmod +x goschema
+          mv goschema /usr/local/bin
+
+      - name: Run Migrations
+        run: |
+          goschema migrate --${{ github.event.inputs.action }} --steps=${{ github.event.inputs.steps }} --loc=./example/database/migrations
+
+      - name: Cleanup
+        if: ${{ always() }}
+        run: |
+          rm -f /usr/local/bin/goschema
+          rm -f /usr/local/bin/vaultdb
+          
+          if [ "${{ secrets.DATABASE_URL }}" == "" ]; then
+              unset DATABASE_URL
+          fi
+          
+          echo "Cleanup complete."
