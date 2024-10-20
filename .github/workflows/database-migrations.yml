@@ -61,13 +61,13 @@ jobs:
             wget $url
             chmod +x vaultdb
             mv vaultdb /usr/local/bin
-          
+
             DATABASE_URL=$(vaultdb -addr="${{ secrets.VAULT_ADDR }}" -user="${{ secrets.VAULT_USER }}" -pass="${{ secrets.VAULT_PASS }}" -path="${{ secrets.VAULT_PATH }}" -host="${{ secrets.DATABASE_HOST }}" -schema="${{ secrets.DATABASE_SCHEMA }}")
             if [ "$DATABASE_URL" == "" ]; then
               echo "Failed to authenticate with Vault. Exiting..."
               exit 1
             fi
-            
+          
             # Set the DATABASE_URL environment variable
             echo "DATABASE_URL=$DATABASE_URL" >> $GITHUB_ENV
           fi
