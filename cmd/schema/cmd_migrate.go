@@ -8,8 +8,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/Jacobbrewer1/goschema/pkg/migrations"
 	"github.com/google/subcommands"
+	"github.com/jacobbrewer1/goschema/pkg/migrations"
 )
 
 type migrateCmd struct {

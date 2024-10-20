@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Jacobbrewer1/goschema/pkg/migrations"
+	"github.com/jacobbrewer1/goschema/pkg/migrations"
 	"github.com/google/subcommands"
 )
 

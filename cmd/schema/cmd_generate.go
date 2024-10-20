@@ -6,8 +6,8 @@ import (
 	"log/slog"
 	"path/filepath"
 
-	"github.com/Jacobbrewer1/goschema/pkg/services/generation"
 	"github.com/google/subcommands"
+	"github.com/jacobbrewer1/goschema/pkg/services/generation"
 )
 
 type generateCmd struct {
