@@ -10,8 +10,6 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
-    reviewers:
-      - "Jacobbrewer1"
     commit-message:
       prefix: "chore"
       include: "scope"
@@ -21,8 +19,6 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
-    reviewers:
-      - "Jacobbrewer1"
     commit-message:
       prefix: "chore"
       include: "scope"
