@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jacobbrewer1/goschema/pkg/migrations"
 	"github.com/google/subcommands"
+	"github.com/jacobbrewer1/goschema/pkg/migrations"
 )
 
 type createCmd struct {
@@ -50,6 +50,18 @@ func (c *createCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...interface{}
 	if c.outputLocation == "" {
 		slog.Error("Output location is required")
 		return subcommands.ExitUsageError
+	} else if c.outputLocation == "." {
+		// Get the directory that called the command
+		dir, err := os.Getwd()
+		if err != nil {
+			slog.Error("Error getting working directory", slog.String("error", err.Error()))
+			return subcommands.ExitFailure
+		}
+
+		c.outputLocation = dir
+	} else {
+		// Attach the current working directory to the output location
+		c.outputLocation = filepath.Join(c.outputLocation)
 	}
 
 	// File name is timestamp_name.up.sql and timestamp_name.down.sql
