@@ -7,9 +7,9 @@ import (
 	"path/filepath"
 	"text/template"
 
-	"github.com/jacobbrewer1/goschema/pkg/models"
 	"github.com/Masterminds/sprig"
 	"github.com/huandu/xstrings"
+	"github.com/jacobbrewer1/goschema/pkg/models"
 )
 
 type templateInfo struct {
