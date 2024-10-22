@@ -114,7 +114,7 @@ func (v *versioning) createVersionTable(schema string) error {
 	sqlStmt := fmt.Sprintf(`
 		CREATE TABLE %s.%s (
 			version VARCHAR(255) NOT NULL PRIMARY KEY,
-		    isCurrent BOOLEAN NOT NULL DEFAULT false
+		    is_current BOOLEAN NOT NULL DEFAULT false
 		);
 `, schema, versionTable)
 
@@ -165,7 +165,7 @@ func (v *versioning) createHistoryTable(schema string) error {
 
 func (v *versioning) getCurrentVersion() (string, error) {
 	var version string
-	err := v.db.Get(&version, "SELECT version FROM "+versionTable+" WHERE isCurrent = true")
+	err := v.db.Get(&version, "SELECT version FROM "+versionTable+" WHERE is_current = true")
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return "", fmt.Errorf("error getting current version: %w", err)
 	}
@@ -180,12 +180,12 @@ func (v *versioning) mustSetCurrentVersion(version string) {
 }
 
 func (v *versioning) setCurrentVersion(version string) error {
-	_, err := v.db.Exec("UPDATE " + versionTable + " SET isCurrent = false WHERE isCurrent = true")
+	_, err := v.db.Exec("UPDATE " + versionTable + " SET is_current = false WHERE is_current = true")
 	if err != nil {
 		return fmt.Errorf("error updating current version: %w", err)
 	}
 
-	_, err = v.db.Exec("INSERT INTO "+versionTable+" (version, isCurrent) VALUES (?, true) ON DUPLICATE KEY UPDATE isCurrent = true", version)
+	_, err = v.db.Exec("INSERT INTO "+versionTable+" (version, is_current) VALUES (?, true) ON DUPLICATE KEY UPDATE is_current = true", version)
 	if err != nil {
 		return fmt.Errorf("error setting current version: %w", err)
 	}
@@ -212,7 +212,7 @@ func (v *versioning) getPreviousVersion() (string, error) {
 	sqlStmt := `
 SELECT version
 FROM goschema_migration_version
-WHERE version < (SELECT version FROM goschema_migration_version WHERE isCurrent = true)
+WHERE version < (SELECT version FROM goschema_migration_version WHERE is_current = true)
 ORDER BY version DESC
 LIMIT 1;
 `
@@ -233,7 +233,7 @@ func (v *versioning) mustSetNoCurrentVersion() {
 }
 
 func (v *versioning) setNoCurrentVersion() error {
-	_, err := v.db.Exec("UPDATE " + versionTable + " SET isCurrent = false WHERE isCurrent = true")
+	_, err := v.db.Exec("UPDATE " + versionTable + " SET is_current = false WHERE is_current = true")
 	if err != nil {
 		return fmt.Errorf("error setting no current version: %w", err)
 	}
