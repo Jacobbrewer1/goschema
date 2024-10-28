@@ -43,7 +43,7 @@ func (m *migrateCmd) Usage() string {
 func (m *migrateCmd) SetFlags(f *flag.FlagSet) {
 	f.BoolVar(&m.up, "up", false, "Migrate up.")
 	f.BoolVar(&m.down, "down", false, "Migrate down.")
-	f.StringVar(&m.migrationLocation, "loc", "./migrations", "The location of the migrations.")
+	f.StringVar(&m.migrationLocation, "loc", ".", "The location of the migrations.")
 	f.IntVar(&m.steps, "steps", 0, "The number of steps to migrate (0 means all).")
 }
 

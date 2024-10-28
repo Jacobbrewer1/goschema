@@ -31,6 +31,11 @@ func (v *versioning) MigrateUp() error {
 	files = filterFiles(files, ".sql")
 	files = filterFiles(files, up+".sql")
 
+	if len(files) == 0 {
+		slog.Info("No files to migrate up")
+		return nil
+	}
+
 	// Order the files by datetime at the prefix.
 	orderedFiles, err := orderFiles(files)
 	if err != nil {
