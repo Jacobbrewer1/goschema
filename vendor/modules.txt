@@ -185,7 +185,7 @@ github.com/pingcap/goleveldb/leveldb/util
 ## explicit
 # github.com/pingcap/pd v2.0.5+incompatible
 ## explicit
-# github.com/pingcap/tidb v2.0.7+incompatible => github.com/darkliquid/tidb v2.0.6-0.20180920112946-471a025d5769+incompatible
+# github.com/pingcap/tidb v2.0.7+incompatible => github.com/jacobbrewer1/tidb v2.0.6-0.20180920112946-471a025d5769+incompatible
 ## explicit
 github.com/pingcap/tidb/ast
 github.com/pingcap/tidb/config
