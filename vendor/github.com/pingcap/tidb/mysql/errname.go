@@ -698,7 +698,7 @@ var MySQLErrName = map[uint16]string{
 	ErrPathLength:                                            "The path specified for %.64s is too long.",
 	ErrWarnDeprecatedSyntaxNoReplacement:                     "'%s' is deprecated and will be removed in a future release.",
 	ErrWrongNativeTableStructure:                             "Native table '%-.64s'.'%-.64s' has the wrong structure",
-	ErrWrongPerfschemaUsage:                                  "Invalid performanceSchema usage.",
+	ErrWrongPerfSchemaUsage:                                  "Invalid performanceSchema usage.",
 	ErrWarnISSkippedTable:                                    "Table '%s'.'%s' was skipped since its definition is being modified by concurrent DDL statement",
 	ErrInsideTransactionPreventsSwitchBinlogDirect:           "Cannot modify @@session.binlogDirectNonTransactionalUpdates inside a transaction",
 	ErrStoredFunctionPreventsSwitchBinlogDirect:              "Cannot change the binlog direct flag inside a stored function or trigger",
@@ -886,8 +886,14 @@ var MySQLErrName = map[uint16]string{
 	ErrInvalidJSONText:                                       "Invalid JSON text: %-.192s",
 	ErrInvalidJSONPath:                                       "Invalid JSON path expression %s.",
 	ErrInvalidJSONData:                                       "Invalid data type for JSON data",
+	ErrInvalidJSONPathWildcard:                               "In this situation, path expressions may not contain the * and ** tokens.",
+	ErrInvalidJSONContainsPathType:                           "The second argument can only be either 'one' or 'all'.",
 	ErrJSONUsedAsKey:                                         "JSON column '%-.192s' cannot be used in key specification.",
-	ErrMemExceedThreshold:                                    "%s holds %dB memory, exceeds threshold %dB.%s",
+
+	// TiDB errors.
+	ErrMemExceedThreshold: "%s holds %dB memory, exceeds threshold %dB.%s",
+	ErrForUpdateCantRetry: "[%d] can not retry select for update statement",
+	ErrAdminCheckTable:    "TiDB admin check table failed.",
 
 	// TiKV/PD errors.
 	ErrPDServerTimeout:    "PD server timeout",
@@ -895,7 +901,7 @@ var MySQLErrName = map[uint16]string{
 	ErrTiKVServerBusy:     "TiKV server is busy",
 	ErrResolveLockTimeout: "Resolve lock timeout",
 	ErrRegionUnavailable:  "Region is unavailable",
-	ErrGCTooEarly:         "GC life time is shorter than transaction duration",
+	ErrGCTooEarly:         "GC life time is shorter than transaction duration, transaction starts at %v, GC safe point is %v",
 
 	ErrTxnTooLarge: "Transaction is too large",
 }

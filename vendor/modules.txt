@@ -4,7 +4,6 @@ filippo.io/edwards25519
 filippo.io/edwards25519/field
 # github.com/BurntSushi/toml v0.0.0-20170626110600-a368813c5e64
 ## explicit
-github.com/BurntSushi/toml
 # github.com/Masterminds/goutils v1.1.1
 ## explicit
 github.com/Masterminds/goutils
@@ -25,7 +24,6 @@ github.com/cenkalti/backoff/v4
 github.com/cespare/xxhash/v2
 # github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd
 ## explicit
-github.com/codahale/hdrhistogram
 # github.com/coreos/etcd v3.2.18+incompatible
 ## explicit
 # github.com/cznic/mathutil v0.0.0-20180504122225-ca4c9f2c1369
@@ -47,15 +45,9 @@ github.com/go-jose/go-jose/v4/jwt
 github.com/go-sql-driver/mysql
 # github.com/golang/protobuf v1.5.3
 ## explicit; go 1.9
-github.com/golang/protobuf/jsonpb
 github.com/golang/protobuf/proto
-github.com/golang/protobuf/ptypes
-github.com/golang/protobuf/ptypes/any
-github.com/golang/protobuf/ptypes/duration
-github.com/golang/protobuf/ptypes/timestamp
 # github.com/golang/snappy v0.0.0-20180518054509-2e65f85255db
 ## explicit
-github.com/golang/snappy
 # github.com/google/btree v0.0.0-20180813153112-4030bb1f1f0c
 ## explicit
 # github.com/google/subcommands v1.2.0
@@ -127,11 +119,6 @@ github.com/jmoiron/sqlx
 github.com/jmoiron/sqlx/reflectx
 # github.com/juju/errors v0.0.0-20170703010042-c7d06af17c68
 ## explicit
-github.com/juju/errors
-# github.com/juju/loggo v0.0.0-20180524022052-584905176618
-## explicit
-# github.com/juju/testing v0.0.0-20180920084828-472a3e8b2073
-## explicit
 # github.com/konsorten/go-windows-terminal-sequences v1.0.3
 ## explicit
 github.com/konsorten/go-windows-terminal-sequences
@@ -156,69 +143,40 @@ github.com/munnerz/goautoneg
 ## explicit
 # github.com/ngaut/sync2 v0.0.0-20141008032647-7a24ed77b2ef
 ## explicit
-# github.com/onsi/ginkgo v1.6.0
+# github.com/opentracing/basictracer-go v1.1.0
+## explicit; go 1.14
+# github.com/opentracing/opentracing-go v1.1.0
 ## explicit
-# github.com/onsi/gomega v1.4.2
-## explicit
-# github.com/opentracing/opentracing-go v1.0.2
-## explicit
-github.com/opentracing/opentracing-go
-github.com/opentracing/opentracing-go/ext
-github.com/opentracing/opentracing-go/log
 # github.com/pingcap/check v0.0.0-20171206051426-1c287c953996
 ## explicit
 # github.com/pingcap/goleveldb v0.0.0-20171020122428-b9ff6c35079e
 ## explicit
-github.com/pingcap/goleveldb/leveldb
-github.com/pingcap/goleveldb/leveldb/cache
-github.com/pingcap/goleveldb/leveldb/comparer
-github.com/pingcap/goleveldb/leveldb/errors
-github.com/pingcap/goleveldb/leveldb/filter
-github.com/pingcap/goleveldb/leveldb/iterator
-github.com/pingcap/goleveldb/leveldb/journal
-github.com/pingcap/goleveldb/leveldb/memdb
-github.com/pingcap/goleveldb/leveldb/opt
-github.com/pingcap/goleveldb/leveldb/storage
-github.com/pingcap/goleveldb/leveldb/table
-github.com/pingcap/goleveldb/leveldb/util
 # github.com/pingcap/kvproto v0.0.0-20180906040556-529c652955d8
 ## explicit
 # github.com/pingcap/pd v2.0.5+incompatible
 ## explicit
-# github.com/pingcap/tidb v2.0.7+incompatible => github.com/darkliquid/tidb v2.0.6-0.20180920112946-471a025d5769+incompatible
+# github.com/pingcap/tidb v2.0.7+incompatible => github.com/jacobbrewer1/tidb v0.0.0-20180920082240-115c345593be
 ## explicit
 github.com/pingcap/tidb/ast
-github.com/pingcap/tidb/config
-github.com/pingcap/tidb/kv
-github.com/pingcap/tidb/meta
-github.com/pingcap/tidb/meta/autoid
-github.com/pingcap/tidb/metrics
 github.com/pingcap/tidb/model
 github.com/pingcap/tidb/mysql
 github.com/pingcap/tidb/parser
 github.com/pingcap/tidb/parser/opcode
-github.com/pingcap/tidb/sessionctx
 github.com/pingcap/tidb/sessionctx/stmtctx
-github.com/pingcap/tidb/sessionctx/variable
-github.com/pingcap/tidb/store/tikv/oracle
-github.com/pingcap/tidb/structure
 github.com/pingcap/tidb/terror
 github.com/pingcap/tidb/types
 github.com/pingcap/tidb/types/json
-github.com/pingcap/tidb/util
 github.com/pingcap/tidb/util/auth
 github.com/pingcap/tidb/util/charset
 github.com/pingcap/tidb/util/chunk
-github.com/pingcap/tidb/util/codec
 github.com/pingcap/tidb/util/execdetails
 github.com/pingcap/tidb/util/format
 github.com/pingcap/tidb/util/hack
-github.com/pingcap/tidb/util/kvcache
-github.com/pingcap/tidb/util/logutil
 github.com/pingcap/tidb/util/memory
 # github.com/pingcap/tipb v0.0.0-20180621072330-658ea9c14169
 ## explicit
-github.com/pingcap/tipb/go-binlog
+github.com/pingcap/tipb/go-tipb
+github.com/pingcap/tipb/sharedbytes
 # github.com/pkg/errors v0.9.1
 ## explicit
 github.com/pkg/errors
@@ -250,7 +208,6 @@ github.com/ryanuber/go-glob
 github.com/sirupsen/logrus
 # github.com/spaolacci/murmur3 v0.0.0-20170819071325-9f5d223c6079
 ## explicit
-github.com/spaolacci/murmur3
 # github.com/stretchr/objx v0.5.2
 ## explicit; go 1.20
 github.com/stretchr/objx
@@ -262,29 +219,10 @@ github.com/stretchr/testify/require
 github.com/stretchr/testify/suite
 # github.com/twinj/uuid v1.0.0
 ## explicit
-# github.com/uber-go/atomic v1.3.2
-## explicit
 # github.com/uber/jaeger-client-go v2.14.0+incompatible
 ## explicit
-github.com/uber/jaeger-client-go
-github.com/uber/jaeger-client-go/config
-github.com/uber/jaeger-client-go/internal/baggage
-github.com/uber/jaeger-client-go/internal/baggage/remote
-github.com/uber/jaeger-client-go/internal/spanlog
-github.com/uber/jaeger-client-go/internal/throttler
-github.com/uber/jaeger-client-go/internal/throttler/remote
-github.com/uber/jaeger-client-go/log
-github.com/uber/jaeger-client-go/rpcmetrics
-github.com/uber/jaeger-client-go/thrift
-github.com/uber/jaeger-client-go/thrift-gen/agent
-github.com/uber/jaeger-client-go/thrift-gen/baggage
-github.com/uber/jaeger-client-go/thrift-gen/jaeger
-github.com/uber/jaeger-client-go/thrift-gen/sampling
-github.com/uber/jaeger-client-go/thrift-gen/zipkincore
-github.com/uber/jaeger-client-go/utils
 # github.com/uber/jaeger-lib v1.5.0
 ## explicit
-github.com/uber/jaeger-lib/metrics
 # golang.org/x/crypto v0.24.0
 ## explicit; go 1.18
 golang.org/x/crypto/pbkdf2
@@ -296,8 +234,6 @@ golang.org/x/net/http/httpguts
 golang.org/x/net/http2
 golang.org/x/net/http2/hpack
 golang.org/x/net/idna
-golang.org/x/net/internal/timeseries
-golang.org/x/net/trace
 # golang.org/x/sys v0.22.0
 ## explicit; go 1.18
 golang.org/x/sys/unix
@@ -322,63 +258,11 @@ golang.org/x/text/unicode/norm
 # golang.org/x/time v0.5.0
 ## explicit; go 1.18
 golang.org/x/time/rate
-# google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1
-## explicit; go 1.19
-google.golang.org/genproto/googleapis/rpc/status
 # google.golang.org/grpc v1.56.3
 ## explicit; go 1.17
-google.golang.org/grpc
-google.golang.org/grpc/attributes
-google.golang.org/grpc/backoff
-google.golang.org/grpc/balancer
-google.golang.org/grpc/balancer/base
-google.golang.org/grpc/balancer/grpclb/state
-google.golang.org/grpc/balancer/roundrobin
-google.golang.org/grpc/binarylog/grpc_binarylog_v1
-google.golang.org/grpc/channelz
-google.golang.org/grpc/codes
-google.golang.org/grpc/connectivity
-google.golang.org/grpc/credentials
-google.golang.org/grpc/credentials/insecure
-google.golang.org/grpc/encoding
-google.golang.org/grpc/encoding/proto
-google.golang.org/grpc/grpclog
-google.golang.org/grpc/internal
-google.golang.org/grpc/internal/backoff
-google.golang.org/grpc/internal/balancer/gracefulswitch
-google.golang.org/grpc/internal/balancerload
-google.golang.org/grpc/internal/binarylog
-google.golang.org/grpc/internal/buffer
-google.golang.org/grpc/internal/channelz
-google.golang.org/grpc/internal/credentials
-google.golang.org/grpc/internal/envconfig
-google.golang.org/grpc/internal/grpclog
-google.golang.org/grpc/internal/grpcrand
-google.golang.org/grpc/internal/grpcsync
-google.golang.org/grpc/internal/grpcutil
-google.golang.org/grpc/internal/metadata
-google.golang.org/grpc/internal/pretty
-google.golang.org/grpc/internal/resolver
-google.golang.org/grpc/internal/resolver/dns
-google.golang.org/grpc/internal/resolver/passthrough
-google.golang.org/grpc/internal/resolver/unix
-google.golang.org/grpc/internal/serviceconfig
-google.golang.org/grpc/internal/status
-google.golang.org/grpc/internal/syscall
-google.golang.org/grpc/internal/transport
-google.golang.org/grpc/internal/transport/networktype
-google.golang.org/grpc/keepalive
-google.golang.org/grpc/metadata
-google.golang.org/grpc/peer
-google.golang.org/grpc/resolver
-google.golang.org/grpc/serviceconfig
-google.golang.org/grpc/stats
-google.golang.org/grpc/status
-google.golang.org/grpc/tap
 # google.golang.org/protobuf v1.34.2
 ## explicit; go 1.20
 google.golang.org/protobuf/encoding/protodelim
-google.golang.org/protobuf/encoding/protojson
 google.golang.org/protobuf/encoding/prototext
 google.golang.org/protobuf/encoding/protowire
 google.golang.org/protobuf/internal/descfmt
@@ -387,7 +271,6 @@ google.golang.org/protobuf/internal/detrand
 google.golang.org/protobuf/internal/editiondefaults
 google.golang.org/protobuf/internal/editionssupport
 google.golang.org/protobuf/internal/encoding/defval
-google.golang.org/protobuf/internal/encoding/json
 google.golang.org/protobuf/internal/encoding/messageset
 google.golang.org/protobuf/internal/encoding/tag
 google.golang.org/protobuf/internal/encoding/text
@@ -410,14 +293,9 @@ google.golang.org/protobuf/runtime/protoiface
 google.golang.org/protobuf/runtime/protoimpl
 google.golang.org/protobuf/types/descriptorpb
 google.golang.org/protobuf/types/gofeaturespb
-google.golang.org/protobuf/types/known/anypb
-google.golang.org/protobuf/types/known/durationpb
 google.golang.org/protobuf/types/known/timestamppb
-# gopkg.in/mgo.v2 v2.0.0-20180705113604-9856a29383ce
-## explicit
 # gopkg.in/natefinch/lumberjack.v2 v2.0.0-20170531160350-a96e63847dc3
 ## explicit
-gopkg.in/natefinch/lumberjack.v2
 # gopkg.in/yaml.v3 v3.0.1
 ## explicit
 gopkg.in/yaml.v3

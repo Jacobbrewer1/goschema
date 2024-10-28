@@ -83,6 +83,12 @@ type ExprNode interface {
 	Format(w io.Writer)
 }
 
+// OptBinary is used for parser.
+type OptBinary struct {
+	IsBinary bool
+	Charset  string
+}
+
 // FuncNode represents function call expression node.
 type FuncNode interface {
 	ExprNode
@@ -149,7 +155,7 @@ type RecordSet interface {
 }
 
 // RowToDatums converts row to datum slice.
-func RowToDatums(row types.Row, fields []*ResultField) []types.Datum {
+func RowToDatums(row chunk.Row, fields []*ResultField) []types.Datum {
 	datums := make([]types.Datum, len(fields))
 	for i, f := range fields {
 		datums[i] = row.GetDatum(i, &f.Column.FieldType)
@@ -189,7 +195,7 @@ type Statement interface {
 	IsReadOnly() bool
 
 	// RebuildPlan rebuilds the plan of the statement.
-	RebuildPlan() error
+	RebuildPlan() (schemaVersion int64, err error)
 }
 
 // Visitor visits a Node.

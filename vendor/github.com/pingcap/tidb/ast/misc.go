@@ -20,7 +20,6 @@ import (
 
 	"github.com/pingcap/tidb/model"
 	"github.com/pingcap/tidb/mysql"
-	"github.com/pingcap/tidb/sessionctx"
 	"github.com/pingcap/tidb/util/auth"
 )
 
@@ -88,6 +87,29 @@ type AuthOption struct {
 	AuthString   string
 	HashString   string
 	// TODO: support auth_plugin
+}
+
+// TraceStmt is a statement to trace what sql actually does at background.
+type TraceStmt struct {
+	stmtNode
+
+	Stmt   StmtNode
+	Format string
+}
+
+// Accept implements Node Accept interface.
+func (n *TraceStmt) Accept(v Visitor) (Node, bool) {
+	newNode, skipChildren := v.Enter(n)
+	if skipChildren {
+		return v.Leave(newNode)
+	}
+	n = newNode.(*TraceStmt)
+	node, ok := n.Stmt.Accept(v)
+	if !ok {
+		return n, false
+	}
+	n.Stmt = node.(DMLNode)
+	return v.Leave(n)
 }
 
 // ExplainStmt is a statement to provide information about how is SQL statement executed
@@ -316,6 +338,7 @@ const (
 	FlushNone FlushStmtType = iota
 	FlushTables
 	FlushPrivileges
+	FlushStatus
 )
 
 // FlushStmt is a statement to flush tables/privileges/optimizer costs and so on.
@@ -607,10 +630,11 @@ type HandleRange struct {
 type AdminStmt struct {
 	stmtNode
 
-	Tp     AdminStmtType
-	Index  string
-	Tables []*TableName
-	JobIDs []int64
+	Tp        AdminStmtType
+	Index     string
+	Tables    []*TableName
+	JobIDs    []int64
+	JobNumber int64
 
 	HandleRanges []HandleRange
 }
@@ -762,17 +786,6 @@ type Ident struct {
 	Name   model.CIStr
 }
 
-// Full returns an Ident which set schema to the current schema if it is empty.
-func (i Ident) Full(ctx sessionctx.Context) (full Ident) {
-	full.Name = i.Name
-	if i.Schema.O != "" {
-		full.Schema = i.Schema
-	} else {
-		full.Schema = model.NewCIStr(ctx.GetSessionVars().CurrentDB)
-	}
-	return
-}
-
 // String implements fmt.Stringer interface.
 func (i Ident) String() string {
 	if i.Schema.O == "" {
@@ -799,6 +812,9 @@ type TableOptimizerHint struct {
 	// It allows only table name or alias (if table has an alias)
 	HintName model.CIStr
 	Tables   []model.CIStr
+	// Statement Execution Time Optimizer Hints
+	// See https://dev.mysql.com/doc/refman/5.7/en/optimizer-hints.html#optimizer-hints-execution-time
+	MaxExecutionTime uint64
 }
 
 // Accept implements Node Accept interface.

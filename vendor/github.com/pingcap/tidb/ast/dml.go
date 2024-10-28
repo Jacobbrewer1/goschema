@@ -661,12 +661,13 @@ func (n *Assignment) Accept(v Visitor) (Node, bool) {
 type LoadDataStmt struct {
 	dmlNode
 
-	IsLocal    bool
-	Path       string
-	Table      *TableName
-	Columns    []*ColumnName
-	FieldsInfo *FieldsClause
-	LinesInfo  *LinesClause
+	IsLocal     bool
+	Path        string
+	Table       *TableName
+	Columns     []*ColumnName
+	FieldsInfo  *FieldsClause
+	LinesInfo   *LinesClause
+	IgnoreLines uint64
 }
 
 // Accept implements Node Accept interface.
@@ -965,6 +966,8 @@ const (
 	ShowPlugins
 	ShowProfiles
 	ShowMasterStatus
+	ShowPrivileges
+	ShowErrors
 )
 
 // ShowStmt is a statement to provide information about databases, tables, columns and so on.
