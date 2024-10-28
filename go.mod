@@ -50,8 +50,6 @@ require (
 	github.com/hashicorp/vault/api/auth/userpass v0.8.0 // indirect
 	github.com/imdario/mergo v0.3.5 // indirect
 	github.com/juju/errors v0.0.0-20170703010042-c7d06af17c68 // indirect
-	github.com/juju/loggo v0.0.0-20180524022052-584905176618 // indirect
-	github.com/juju/testing v0.0.0-20180920084828-472a3e8b2073 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.3 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
@@ -61,9 +59,8 @@ require (
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/ngaut/pools v0.0.0-20180318154953-b7bc8c42aac7 // indirect
 	github.com/ngaut/sync2 v0.0.0-20141008032647-7a24ed77b2ef // indirect
-	github.com/onsi/ginkgo v1.6.0 // indirect
-	github.com/onsi/gomega v1.4.2 // indirect
-	github.com/opentracing/opentracing-go v1.0.2 // indirect
+	github.com/opentracing/basictracer-go v1.1.0 // indirect
+	github.com/opentracing/opentracing-go v1.1.0 // indirect
 	github.com/pingcap/check v0.0.0-20171206051426-1c287c953996 // indirect
 	github.com/pingcap/goleveldb v0.0.0-20171020122428-b9ff6c35079e // indirect
 	github.com/pingcap/kvproto v0.0.0-20180906040556-529c652955d8 // indirect
@@ -79,7 +76,6 @@ require (
 	github.com/spaolacci/murmur3 v0.0.0-20170819071325-9f5d223c6079 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/twinj/uuid v1.0.0 // indirect
-	github.com/uber-go/atomic v1.3.2 // indirect
 	github.com/uber/jaeger-client-go v2.14.0+incompatible // indirect
 	github.com/uber/jaeger-lib v1.5.0 // indirect
 	golang.org/x/crypto v0.24.0 // indirect
@@ -87,12 +83,10 @@ require (
 	golang.org/x/sys v0.22.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
-	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
 	google.golang.org/grpc v1.56.3 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
-	gopkg.in/mgo.v2 v2.0.0-20180705113604-9856a29383ce // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0-20170531160350-a96e63847dc3 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/pingcap/tidb v2.0.7+incompatible => github.com/darkliquid/tidb v2.0.6-0.20180920112946-471a025d5769+incompatible
+replace github.com/pingcap/tidb v2.0.7+incompatible => github.com/jacobbrewer1/tidb v0.0.0-20180920082240-115c345593be
