@@ -95,4 +95,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/pingcap/tidb v2.0.7+incompatible => github.com/darkliquid/tidb v2.0.6-0.20180920112946-471a025d5769+incompatible
+replace github.com/pingcap/tidb v2.0.7+incompatible => github.com/jacobbrewer1/tidb v2.0.6-0.20180920112946-471a025d5769+incompatible
