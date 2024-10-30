@@ -1,6 +1,7 @@
 package migrations
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"io"
@@ -134,7 +135,7 @@ func (v *versioning) migrate(f os.DirEntry, direction string) error {
 		return fmt.Errorf("error beginning transaction: %w", err)
 	}
 	defer func() {
-		if err := tx.Rollback(); err != nil {
+		if err := tx.Rollback(); err != nil && !errors.Is(err, sql.ErrTxDone) {
 			slog.Error("error rolling back transaction", slog.String("error", err.Error()))
 		}
 	}()
@@ -153,7 +154,7 @@ func (v *versioning) migrate(f os.DirEntry, direction string) error {
 	switch direction {
 	case up:
 		v.mustSetCurrentVersion(prefix)
-		v.mustCreateHistory(prefix, up)
+		v.mustCreateHistory(prefix, migratedUp)
 	case down:
 		// Set the current version to the previous version.
 		prev, err := v.getPreviousVersion()
@@ -165,7 +166,7 @@ func (v *versioning) migrate(f os.DirEntry, direction string) error {
 			v.mustSetCurrentVersion(prev)
 		}
 
-		v.mustCreateHistory(prefix, down)
+		v.mustCreateHistory(prefix, migratedDown)
 	}
 
 	return nil

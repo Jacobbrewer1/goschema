@@ -17,7 +17,9 @@ const (
 	down          = "down"
 	migratingUp   = "migrating_up"
 	migratingDown = "migrating_down"
-	stateError    = "error"
+	migratedUp    = "migrated_up"
+	migratedDown  = "migrated_down"
+	stateError    = "migration_error"
 
 	FilePrefix = "20060102150405"
 )
@@ -150,10 +152,10 @@ func (v *versioning) createHistoryTable(schema string) error {
 		CREATE TABLE %s.%s (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			version VARCHAR(255) NOT NULL,
-		    action enum('up', 'down', 'migrating_up', 'migrating_down', 'error') NOT NULL,
+		    action enum('%s', '%s', '%s', '%s', '%s') NOT NULL,
 			created_at TIMESTAMP
 		);
-`, schema, historyTable)
+`, schema, historyTable, migratingUp, migratingDown, migratedUp, migratedDown, stateError)
 
 	_, err := v.db.Exec(sqlStmt)
 	if err != nil {
