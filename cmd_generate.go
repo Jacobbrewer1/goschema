@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 
 	"github.com/google/subcommands"
-	generation2 "github.com/jacobbrewer1/goschema/pkg/generation"
+	"github.com/jacobbrewer1/goschema/pkg/generation"
 )
 
 type generateCmd struct {
@@ -60,7 +60,7 @@ func (g *generateCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...interface
 		return subcommands.ExitFailure
 	}
 
-	tables, err := generation2.LoadSQL(g.sqlLocation)
+	tables, err := generation.LoadSQL(g.sqlLocation)
 	if err != nil {
 		slog.Error("Error loading SQL", slog.String("templatesLocation", g.templatesLocation), slog.String("outputLocation", g.outputLocation), slog.String("error", err.Error()))
 		return subcommands.ExitFailure
@@ -69,7 +69,7 @@ func (g *generateCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...interface
 		return subcommands.ExitFailure
 	}
 
-	err = generation2.RenderTemplates(tables, g.templatesLocation, g.outputLocation, g.fileExtensionPrefix)
+	err = generation.RenderTemplates(tables, g.templatesLocation, g.outputLocation, g.fileExtensionPrefix)
 	if err != nil {
 		slog.Error("Error rendering templates", slog.String("templatesLocation", g.templatesLocation), slog.String("outputLocation", g.outputLocation), slog.String("error", err.Error()))
 		return subcommands.ExitFailure
