@@ -43,8 +43,8 @@ jobs:
 
       - name: Build binaries
         run: |
-          go build -o bin/goschema ./cmd/schema
-          go build -o bin/vaultdb ./cmd/vaultdb
+          go build -o bin/goschema .
+          go build -o bin/vaultdb ./tools/vaultdb
 
       - name: Create Changelog
         run: |

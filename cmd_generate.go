@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 
 	"github.com/google/subcommands"
-	"github.com/jacobbrewer1/goschema/pkg/services/generation"
+	"github.com/jacobbrewer1/goschema/pkg/generation"
 )
 
 type generateCmd struct {
