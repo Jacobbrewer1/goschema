@@ -1,4 +1,4 @@
-package main
+package goschema
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	"github.com/google/subcommands"
 )
 
-func main() {
+func Run() {
 	subcommands.Register(subcommands.HelpCommand(), "")
 	subcommands.Register(subcommands.FlagsCommand(), "")
 	subcommands.Register(subcommands.CommandsCommand(), "")
