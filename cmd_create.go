@@ -1,4 +1,4 @@
-package goschema
+package main
 
 import (
 	"context"
