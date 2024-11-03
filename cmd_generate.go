@@ -96,5 +96,10 @@ func (g *generateCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...interface
 		}
 	}
 
+	if err := generation.FmtTemplates(g.outputLocation); err != nil {
+		slog.Error("Error formatting templates", slog.String("outputLocation", g.outputLocation), slog.String("error", err.Error()))
+		return subcommands.ExitFailure
+	}
+
 	return subcommands.ExitSuccess
 }
