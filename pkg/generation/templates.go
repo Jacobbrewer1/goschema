@@ -107,3 +107,10 @@ func InstallGoimports() error {
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
 }
+
+func FmtTemplates(outputLoc string) error {
+	cmd := exec.Command("goimports", "-w", outputLoc)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
+}
