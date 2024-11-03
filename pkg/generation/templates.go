@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"text/template"
 
@@ -82,4 +83,27 @@ func generate(t *templateInfo, tmpl *template.Template, outputLoc string, fileEx
 	}(f)
 
 	return tmpl.Execute(f, t)
+}
+
+func GoimportsInstallIfNeeded() error {
+	if !IsGoimportsInstalled() {
+		slog.Info("Installing goimports")
+		if err := InstallGoimports(); err != nil {
+			return fmt.Errorf("error installing goimports: %w", err)
+		}
+	}
+
+	return nil
+}
+
+func IsGoimportsInstalled() bool {
+	_, err := exec.LookPath("goimports")
+	return err == nil
+}
+
+func InstallGoimports() error {
+	cmd := exec.Command("go", "install", "golang.org/x/tools/cmd/goimports@latest")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
 }
