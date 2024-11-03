@@ -1,6 +1,7 @@
 package generation
 
 import (
+	"embed"
 	"fmt"
 	"log/slog"
 	"os"
@@ -25,6 +26,25 @@ func RenderTemplates(tables []*models.Table, templatesLoc, outputLoc string, fil
 
 	for _, t := range tables {
 		if err = generate(&templateInfo{
+			OutputDir: outputLoc,
+			Table:     t,
+		}, tmpl, outputLoc, fileExtensionPrefix); err != nil {
+			return fmt.Errorf("error generating template: %w", err)
+		}
+	}
+
+	return nil
+}
+
+// RenderWithTemplates renders templates that are provided as embedded files
+func RenderWithTemplates(fs embed.FS, tables []*models.Table, outputLoc string, fileExtensionPrefix string) error {
+	tmpl, err := template.New("model.tmpl").Funcs(sprig.TxtFuncMap()).Funcs(Helpers).ParseFS(fs, "templates/*.tmpl")
+	if err != nil {
+		return fmt.Errorf("error parsing templates: %w", err)
+	}
+
+	for _, t := range tables {
+		if err := generate(&templateInfo{
 			OutputDir: outputLoc,
 			Table:     t,
 		}, tmpl, outputLoc, fileExtensionPrefix); err != nil {

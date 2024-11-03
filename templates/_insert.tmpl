@@ -25,7 +25,7 @@ func (m *{{ $struct }}) Insert(db DB) error {
         return err
     }
 
-    m.{{ .Name | structify }} = {{ template "type" . }}(id)
+    m.{{ .Name | structify }} = {{ get_type . }}(id)
     return nil
     {{- else -}}
     return err
@@ -64,7 +64,7 @@ func InsertMany{{ $struct }}s(db DB, ms ...*{{ $struct }}) error {
     }
 
     for i, m := range ms {
-        m.{{ .Name | structify }} = {{ template "type" . }}(id + int64(i))
+        m.{{ .Name | structify }} = {{ get_type . }}(id + int64(i))
     }
     {{- end }}
 

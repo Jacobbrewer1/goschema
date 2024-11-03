@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"embed"
 	"flag"
 	"log/slog"
 	"path/filepath"
@@ -9,6 +10,9 @@ import (
 	"github.com/google/subcommands"
 	"github.com/jacobbrewer1/goschema/pkg/generation"
 )
+
+//go:embed templates/*.tmpl
+var defaultTemplates embed.FS
 
 type generateCmd struct {
 	// templatesLocation is the location of the templates to use.
@@ -22,6 +26,9 @@ type generateCmd struct {
 
 	// fileExtensionPrefix is the prefix to add to the generated file extension.
 	fileExtensionPrefix string
+
+	// defaultTemplates is whether to use the binary templates.
+	defaultTemplates bool
 }
 
 func (g *generateCmd) Name() string {
@@ -43,6 +50,7 @@ func (g *generateCmd) SetFlags(f *flag.FlagSet) {
 	f.StringVar(&g.outputLocation, "out", ".", "The location to write the generated files to.")
 	f.StringVar(&g.sqlLocation, "sql", "./schemas/*.sql", "The location of the SQL files to use.")
 	f.StringVar(&g.fileExtensionPrefix, "extension", "xo", "The prefix to add to the generated file extension.")
+	f.BoolVar(&g.defaultTemplates, "default", true, "Whether to use the default templates.")
 }
 
 func (g *generateCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
@@ -69,10 +77,18 @@ func (g *generateCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...interface
 		return subcommands.ExitFailure
 	}
 
-	err = generation.RenderTemplates(tables, g.templatesLocation, g.outputLocation, g.fileExtensionPrefix)
-	if err != nil {
-		slog.Error("Error rendering templates", slog.String("templatesLocation", g.templatesLocation), slog.String("outputLocation", g.outputLocation), slog.String("error", err.Error()))
-		return subcommands.ExitFailure
+	if g.defaultTemplates {
+		err = generation.RenderWithTemplates(defaultTemplates, tables, g.outputLocation, g.fileExtensionPrefix)
+		if err != nil {
+			slog.Error("Error rendering default templates", slog.String("outputLocation", g.outputLocation), slog.String("error", err.Error()))
+			return subcommands.ExitFailure
+		}
+	} else {
+		err = generation.RenderTemplates(tables, g.templatesLocation, g.outputLocation, g.fileExtensionPrefix)
+		if err != nil {
+			slog.Error("Error rendering templates", slog.String("templatesLocation", g.templatesLocation), slog.String("outputLocation", g.outputLocation), slog.String("error", err.Error()))
+			return subcommands.ExitFailure
+		}
 	}
 
 	return subcommands.ExitSuccess
