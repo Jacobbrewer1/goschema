@@ -22,7 +22,7 @@ import (
 {{- end }}
 type {{ $struct }} struct {
 	{{ range $column := .Columns -}}
-	{{ .Name | structify }} {{ get_type $column }} {{ template "tags" $column }} {{ if .Comment }}// {{ .Comment }}{{ end }}
+	{{ .Name | structify }} {{ get_type $column }} {{ get_tags $column }} {{ if .Comment }}// {{ .Comment }}{{ end }}
 	{{ end -}}
 }
 
