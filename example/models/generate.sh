@@ -78,7 +78,7 @@ if [ "$forced" = false ]; then
 fi
 
 for model in $togen; do
-  gum spin --spinner dot --title "Generating model $model" -- goschema generate --templates=./templates/*tmpl --out=./ --sql=./schemas/"$model".sql --extension=xo
+  gum spin --spinner dot --title "Generating model $model" -- goschema generate --out=./ --sql=./schemas/"$model".sql --extension=xo
   go fmt ./"$model".xo.go
   goimports -w ./"$model".xo.go
 done

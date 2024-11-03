@@ -28,7 +28,7 @@ func (m *{{ $struct }}) InsertWithUpdate(db DB) error {
         return err
     }
 
-    m.{{ .Name | structify }} = {{ template "type" . }}(id)
+    m.{{ .Name | structify }} = {{ get_type . }}(id)
     return nil
     {{- else -}}
     return err

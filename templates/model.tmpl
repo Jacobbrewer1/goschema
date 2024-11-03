@@ -22,7 +22,7 @@ import (
 {{- end }}
 type {{ $struct }} struct {
 	{{ range $column := .Columns -}}
-	{{ .Name | structify }} {{ template "type" $column }} {{ template "tags" $column }} {{ if .Comment }}// {{ .Comment }}{{ end }}
+	{{ .Name | structify }} {{ get_type $column }} {{ template "tags" $column }} {{ if .Comment }}// {{ .Comment }}{{ end }}
 	{{ end -}}
 }
 
@@ -88,7 +88,7 @@ func (m *{{ $struct }}) SaveOrUpdate(db DB) error {
 // {{ $struct }}By{{ range $i, $col := $key.Columns }}{{ $col.Name | structify }}{{ end }} retrieves a row from '{{ $.Table.Name }}' as a {{ $struct }}.
 //
 // Generated from primary key.
-func {{ $struct }}By{{ range $i, $col := $key.Columns }}{{ $col.Name | structify }}{{ end }}(db DB, {{ range $i, $col := $key.Columns }}{{ if $i }}, {{ end }}{{ $col.Name | structify | lcfirst }} {{ template "type" $col}}{{ end }}) (*{{ $struct }}, error) {
+func {{ $struct }}By{{ range $i, $col := $key.Columns }}{{ $col.Name | structify }}{{ end }}(db DB, {{ range $i, $col := $key.Columns }}{{ if $i }}, {{ end }}{{ $col.Name | structify | lcfirst }} {{ get_type $col}}{{ end }}) (*{{ $struct }}, error) {
     t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("insert_{{ $struct | structify -}}"))
     defer t.ObserveDuration()
 
@@ -121,7 +121,7 @@ func (m *{{ $struct }}) Get{{ $local_col | structify }}{{ $foreign_struct }}(db 
   }
 
   {{ end -}}
-	return {{ $foreign_struct }}By{{ $foreign_col | structify }}(db, m.{{ $local_col | structify }}{{ if $col_data.Nullable }}.{{ template "type_reverse_nullable" $col_data }}{{ end }})
+	return {{ $foreign_struct }}By{{ $foreign_col | structify }}(db, m.{{ $local_col | structify }}{{ if $col_data.Nullable }}.{{ get_type $col_data }}{{ end }})
 }
 {{ end -}}
 {{ end -}}
@@ -135,7 +135,7 @@ func (m *{{ $struct }}) Get{{ $local_col | structify }}{{ $foreign_struct }}(db 
 // {{ $struct }}By{{ range $i, $col := $key.Columns }}{{ $col.Name | structify }}{{ end }} retrieves {{ if $uniq }}a row{{ else }}rows{{ end }} from '{{ $.Table.Name }}' as a {{ if $uniq }}*{{ $struct }}{{ else }}[]*{{ $struct }}{{ end }}.
 //
 // Generated from index '{{ $key.Name }}' of type '{{ $key.Type }}'.
-func {{ $struct }}By{{ range $i, $col := $key.Columns }}{{ $col.Name | structify }}{{ end }}(db DB, {{ range $i, $col := $key.Columns }}{{ if $i }}, {{ end }}{{ $col.Name | structify | lcfirst }} {{ template "type" $col}}{{ end }}) ({{ if not $uniq }}[]{{ end }}*{{ $struct }}, error) {
+func {{ $struct }}By{{ range $i, $col := $key.Columns }}{{ $col.Name | structify }}{{ end }}(db DB, {{ range $i, $col := $key.Columns }}{{ if $i }}, {{ end }}{{ $col.Name | structify | lcfirst }} {{ get_type $col}}{{ end }}) ({{ if not $uniq }}[]{{ end }}*{{ $struct }}, error) {
     t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("insert_{{ $struct | structify -}}"))
     defer t.ObserveDuration()
 
