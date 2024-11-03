@@ -4,7 +4,7 @@ import (
 	"log"
 	"log/slog"
 
-	"github.com/pingcap/tidb/ast"
+	"github.com/pingcap/tidb/pkg/parser/ast"
 )
 
 // Table represents a MySQL table definition
@@ -24,7 +24,7 @@ func (t *Table) setColumns(ct *ast.CreateTableStmt) error {
 			Name: col.Name.String(),
 		}
 		t.Columns[i].setTypeInfo(col.Tp)
-		t.Columns[i].setFlags(col.Tp.Flag)
+		t.Columns[i].setFlags(col.Tp.GetFlag())
 		if err := t.Columns[i].setOptions(col); err != nil {
 			return err
 		}

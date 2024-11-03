@@ -3,12 +3,16 @@ package models
 import (
 	"log/slog"
 	"math/big"
-	"strconv"
 	"time"
 
-	"github.com/pingcap/tidb/ast"
-	"github.com/pingcap/tidb/mysql"
-	"github.com/pingcap/tidb/types"
+	"github.com/pingcap/tidb/pkg/parser/ast"
+	"github.com/pingcap/tidb/pkg/parser/mysql"
+	"github.com/pingcap/tidb/pkg/parser/types"
+)
+
+const (
+	// TypeEnum represents a MySQL enum type. This is because ENUMS are not a real type in MySQL, they are just a list of strings.
+	TypeEnum = "enum"
 )
 
 // FunctionCall represents a MySQL function call
@@ -34,11 +38,12 @@ type Column struct {
 }
 
 func (c *Column) setTypeInfo(tp *types.FieldType) {
-	c.Type = types.TypeToStr(tp.Tp, tp.Charset)
-	c.TypeSize = tp.Flen
-	c.TypePrecision = tp.Decimal
-	if tp.Tp == mysql.TypeEnum {
-		c.Elements = tp.Elems
+	c.Type = tp.EvalType().String()
+	c.TypeSize = tp.GetFlen()
+	c.TypePrecision = tp.GetDecimal()
+	if tp.GetType() == mysql.TypeEnum {
+		c.Type = TypeEnum
+		c.Elements = tp.GetElems()
 	}
 }
 
@@ -56,8 +61,8 @@ func (c *Column) setOptions(col *ast.ColumnDef) error {
 		case ast.ColumnOptionDefaultValue:
 			c.HasDefault = true
 			switch v := opt.Expr.(type) {
-			case *ast.ValueExpr:
-				if v != nil && !v.IsNull() {
+			case ast.ValueExpr:
+				if v != nil && v.GetValue() != nil {
 					if err := c.setDefaultValue(col, v); err != nil {
 						return err
 					}
@@ -71,7 +76,7 @@ func (c *Column) setOptions(col *ast.ColumnDef) error {
 		case ast.ColumnOptionAutoIncrement:
 			c.AutoIncrementing = true
 		case ast.ColumnOptionComment:
-			c.Comment = opt.Expr.GetValue().(string)
+			c.Comment = opt.Expr.Text()
 		case ast.ColumnOptionPrimaryKey:
 			c.InPrimaryKey = true
 			c.InUniqueKey = true
@@ -86,8 +91,8 @@ func (c *Column) setOptions(col *ast.ColumnDef) error {
 	return nil
 }
 
-func (c *Column) setDefaultValue(col *ast.ColumnDef, v *ast.ValueExpr) (err error) {
-	if v.IsNull() {
+func (c *Column) setDefaultValue(col *ast.ColumnDef, v ast.ValueExpr) (err error) {
+	if v.GetValue() == nil {
 		return nil
 	}
 
@@ -95,48 +100,52 @@ func (c *Column) setDefaultValue(col *ast.ColumnDef, v *ast.ValueExpr) (err erro
 	// invalid schemas then schema2go should try to do the right thing, or at least the least-wrong thing.
 	switch col.Tp.EvalType() {
 	case types.ETDatetime:
-		var t types.Time
-		if col.Tp.Tp == mysql.TypeDate {
-			t, _ = types.ParseDate(nil, v.GetString())
-			c.Default, err = t.Time.GoTime(time.UTC)
-			if types.ErrInvalidTimeFormat.Equal(err) {
+		if col.Tp.GetType() == mysql.TypeDate {
+			c.Default, err = time.Parse(time.DateOnly, v.GetString())
+			if err != nil {
 				c.Default = time.Time{}
 				return nil
 			}
+
 			c.Default = v.GetString()
 			return nil
 		}
 
-		t, _ = types.ParseDatetime(nil, v.GetString())
-		c.Default, err = t.Time.GoTime(time.UTC)
-		if types.ErrInvalidTimeFormat.Equal(err) {
+		c.Default, err = time.Parse(time.DateTime, v.GetString())
+		if err != nil {
 			c.Default = time.Time{}
 			return nil
 		}
+
 		c.Default = v.GetString()
 		return err
 	case types.ETTimestamp:
-		t, _ := types.ParseTimestamp(nil, v.GetString())
-		c.Default, _ = t.Time.GoTime(time.UTC)
+		t, err := time.Parse(time.DateTime, v.GetString())
+		if err != nil {
+			c.Default = time.Time{}
+			return nil
+		}
+
+		c.Default = t
 		return nil
 	case types.ETDuration:
-		c.Default = v.GetMysqlDuration().Duration
-		if c.Default.(time.Duration) == 0 {
-			d, _ := types.ParseDuration(v.GetString(), types.GetFsp(v.GetString()))
-			c.Default = d.Duration
+		d, err := time.ParseDuration(v.GetString())
+		if err != nil {
+			c.Default = time.Duration(0)
+			return nil
 		}
+
+		c.Default = d
+		return nil
 	case types.ETDecimal, types.ETReal:
-		switch v.Kind() {
-		case types.KindFloat32:
-			c.Default = v.GetFloat32()
-		case types.KindFloat64:
-			c.Default = v.GetFloat64()
-		case types.KindMysqlDecimal:
-			d := v.GetMysqlDecimal()
-			prec, _ := d.PrecisionAndFrac()
-			c.Default, _, err = big.ParseFloat(string(d.ToString()), 10, uint(prec), big.ToNearestEven)
-		case types.KindString:
-			c.Default, err = strconv.ParseFloat(v.GetString(), 64)
+		switch v.GetType().GetType() {
+		case mysql.TypeFloat, mysql.TypeDouble:
+			c.Default = v.GetValue()
+			return nil
+		case mysql.TypeNewDecimal:
+			d := v.GetString()
+			precision := col.Tp.GetFlen()
+			c.Default, _, err = big.ParseFloat(d, 10, uint(precision), big.ToNearestEven)
 		}
 		return err
 	case types.ETInt:
@@ -152,9 +161,9 @@ func (c *Column) setDefaultValue(col *ast.ColumnDef, v *ast.ValueExpr) (err erro
 			}
 			return nil
 		}
-		c.Default = v.GetInt64()
+		c.Default = v.GetValue()
 	case types.ETJson:
-		c.Default = v.GetMysqlJSON().String()
+		c.Default = v.GetString()
 	case types.ETString:
 		c.Default = v.GetString()
 	default:
