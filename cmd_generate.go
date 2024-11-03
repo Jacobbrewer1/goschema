@@ -68,6 +68,11 @@ func (g *generateCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...interface
 		return subcommands.ExitFailure
 	}
 
+	if err := generation.GoimportsInstallIfNeeded(); err != nil {
+		slog.Error("Error installing goimports", slog.String("error", err.Error()))
+		return subcommands.ExitFailure
+	}
+
 	tables, err := generation.LoadSQL(g.sqlLocation)
 	if err != nil {
 		slog.Error("Error loading SQL", slog.String("templatesLocation", g.templatesLocation), slog.String("outputLocation", g.outputLocation), slog.String("error", err.Error()))
