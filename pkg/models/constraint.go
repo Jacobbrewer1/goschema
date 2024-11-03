@@ -1,6 +1,8 @@
 package models
 
-import "github.com/pingcap/tidb/ast"
+import (
+	"github.com/pingcap/tidb/pkg/parser/ast"
+)
 
 // Constraint represents a MySQL foreign key constraint
 type Constraint struct {
@@ -13,6 +15,6 @@ type Constraint struct {
 func (c *Constraint) setReferences(con *ast.Constraint) {
 	c.References = make(map[string]string, len(con.Keys))
 	for i, col := range con.Keys {
-		c.References[col.Column.String()] = con.Refer.IndexColNames[i].Column.String()
+		c.References[col.Column.String()] = con.Refer.IndexPartSpecifications[i].Column.String()
 	}
 }

@@ -24,6 +24,8 @@ var Helpers = template.FuncMap{
 	"enum_columns":           enumColumns,
 	"unique_column_keys":     uniqueColumnKeys,
 	"sorted_columns":         sortedColumns,
+	"get_type":               getType,
+	"get_tags":               getTags,
 }
 
 // hasPrimaryKey returns true if the table has a primary key
@@ -170,4 +172,124 @@ func sortedColumns(t *models.Table) []*models.Column {
 	copy(ret, t.Columns)
 	sort.SliceStable(ret, func(i, j int) bool { return ret[i].Name < ret[j].Name })
 	return ret
+}
+
+func getType(col *models.Column) string {
+	switch strings.ToLower(col.Type) {
+	case "bigint":
+		if col.Nullable {
+			return "usql.NullInt64"
+		}
+		if col.Unsigned {
+			return "uint64"
+		}
+		return "int64"
+	case "int":
+		if col.Nullable {
+			return "usql.NullInt64"
+		}
+		if col.Unsigned {
+			return "uint"
+		}
+		return "int"
+	case "tinyint":
+		if col.TypeSize == 1 {
+			if col.Nullable {
+				return "usql.NullBool"
+			}
+			return "bool"
+		}
+		if col.Nullable {
+			return "usql.NullInt64"
+		}
+		if col.Unsigned {
+			return "uint8"
+		}
+		return "int8"
+	case "smallint":
+		if col.Nullable {
+			return "usql.NullInt64"
+		}
+		if col.Unsigned {
+			return "uint16"
+		}
+		return "int16"
+	case "mediumint":
+		if col.Nullable {
+			return "usql.NullInt64"
+		}
+		if col.Unsigned {
+			return "uint32"
+		}
+		return "int32"
+	case "float":
+		if col.Nullable {
+			return "usql.NullFloat64"
+		}
+		if col.TypeSize < 25 {
+			return "float32"
+		}
+		return "float64"
+	case "decimal", "double":
+		if col.Nullable {
+			return "usql.NullFloat64"
+		}
+		return "float64"
+	case "char", "varchar", "tinytext", "text", "mediumtext", "longtext", "string":
+		if col.Nullable {
+			return "usql.NullString"
+		}
+		return "string"
+	case "binary", "varbinary", "tinyblob", "blob", "mediumblob", "longblob":
+		return "[]byte"
+	case "enum":
+		if col.Nullable {
+			return "usql.NullEnum"
+		}
+		return "usql.Enum"
+	case "year", "date", "datetime", "timestamp":
+		if col.Nullable {
+			return "usql.NullTime"
+		}
+		return "time.Time"
+	case "time":
+		if col.Nullable {
+			return "usql.NullDuration"
+		}
+		return "usql.Duration"
+	default:
+		fmt.Println("Unknown type:", col.Type)
+		return "unknown"
+	}
+}
+
+func getTags(col *models.Column) string {
+	tags := fmt.Sprintf("`db:\"%s", col.Name)
+	if col.InPrimaryKey {
+		tags += ",pk"
+	}
+	if col.AutoIncrementing {
+		tags += ",autoinc"
+	}
+	if col.HasDefault {
+		tags += ",default"
+	}
+	if col.Nullable {
+		tags += ",nullable"
+	}
+	if col.Unsigned {
+		tags += ",unsigned"
+	}
+	if col.ZeroFilled {
+		tags += ",zerofill"
+	}
+	if col.Binary {
+		tags += ",binary"
+	}
+	if col.InUniqueKey {
+		tags += ",unique"
+	}
+	tags += "\"`"
+
+	return tags
 }

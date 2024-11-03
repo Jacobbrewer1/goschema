@@ -7,8 +7,9 @@ import (
 	"strings"
 
 	"github.com/jacobbrewer1/goschema/pkg/models"
-	"github.com/pingcap/tidb/ast"
-	"github.com/pingcap/tidb/parser"
+	"github.com/pingcap/tidb/pkg/parser"
+	"github.com/pingcap/tidb/pkg/parser/ast"
+	_ "github.com/pingcap/tidb/pkg/parser/test_driver"
 )
 
 // LoadSQL loads all SQL files in the given paths and parses them
@@ -67,7 +68,7 @@ func parseSQL(p *parser.Parser, path string) ([]*models.Table, error) {
 	}
 	sql = []byte(strings.Join(lines, "\n"))
 
-	stmts, err := p.Parse(string(sql), "", "")
+	stmts, _, err := p.ParseSQL(string(sql))
 	if err != nil {
 		return nil, fmt.Errorf("error parsing SQL: %w", err)
 	}
