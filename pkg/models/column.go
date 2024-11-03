@@ -10,6 +10,11 @@ import (
 	"github.com/pingcap/tidb/pkg/parser/types"
 )
 
+const (
+	// TypeEnum represents a MySQL enum type. This is because ENUMS are not a real type in MySQL, they are just a list of strings.
+	TypeEnum = "enum"
+)
+
 // FunctionCall represents a MySQL function call
 type FunctionCall string
 
@@ -37,7 +42,7 @@ func (c *Column) setTypeInfo(tp *types.FieldType) {
 	c.TypeSize = tp.GetFlen()
 	c.TypePrecision = tp.GetDecimal()
 	if tp.GetType() == mysql.TypeEnum {
-		c.Type = "enum"
+		c.Type = TypeEnum
 		c.Elements = tp.GetElems()
 	}
 }
