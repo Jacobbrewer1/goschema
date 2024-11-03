@@ -271,24 +271,6 @@ func getTags(col *models.Column) string {
 	if col.AutoIncrementing {
 		tags += ",autoinc"
 	}
-	if col.HasDefault {
-		tags += ",default"
-	}
-	if col.Nullable {
-		tags += ",nullable"
-	}
-	if col.Unsigned {
-		tags += ",unsigned"
-	}
-	if col.ZeroFilled {
-		tags += ",zerofill"
-	}
-	if col.Binary {
-		tags += ",binary"
-	}
-	if col.InUniqueKey {
-		tags += ",unique"
-	}
 	tags += "\"`"
 
 	return tags
