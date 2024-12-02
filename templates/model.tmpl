@@ -11,7 +11,7 @@ import (
 	"github.com/go-sql-driver/mysql"
 	"github.com/jacobbrewer1/patcher"
 	"github.com/jacobbrewer1/patcher/inserter"
-	"github.com/jacobbrewer1/goschema/pkg/usql"
+	"github.com/jacobbrewer1/goschema/usql"
 	"github.com/prometheus/client_golang/prometheus"
 )
 {{ with .Table }}
@@ -160,10 +160,10 @@ func {{ $struct }}By{{ range $i, $col := $key.Columns }}{{ $col.Name | structify
 // Valid values for the '{{ $enumcol.Name | structify }}' enum column
 var (
 {{- range $enum := .Elements }}
-	{{ $struct }}{{ $enumcol.Name | structify }}{{ $enum | structify }} = {{ if $enumcol.Nullable }}msql.NewNullEnum("{{ $enum }}"){{ else }}"{{ $enum }}"{{ end }}
+	{{ $struct }}{{ $enumcol.Name | structify }}{{ $enum | structify }} = {{ if $enumcol.Nullable }}usql.NewNullEnum("{{ $enum }}"){{ else }}usql.NewEnum("{{ $enum }}"){{ end }}
 {{- end }}
 {{- if $enumcol.Nullable }}
-	{{ $struct }}{{ $enumcol.Name | structify }}Null = msql.NullEnum{}
+	{{ $struct }}{{ $enumcol.Name | structify }}Null = usql.NullEnum{}
 {{- end }}
 )
 {{ end }}
