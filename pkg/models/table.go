@@ -61,6 +61,7 @@ func (t *Table) setPrimaryKey(con *ast.Constraint) {
 		t.PrimaryKey.Columns[i].InUniqueKey = true
 	}
 
+	// TODO: remove this once the parser is fixed
 	for _, col := range t.Columns {
 		for _, pk := range t.PrimaryKey.Columns {
 			if col.Name == pk.Name {
