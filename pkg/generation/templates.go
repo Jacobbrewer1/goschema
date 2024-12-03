@@ -7,6 +7,8 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
+	"sync"
 	"text/template"
 
 	"github.com/Masterminds/sprig"
@@ -53,6 +55,91 @@ func RenderWithTemplates(fs embed.FS, tables []*models.Table, outputLoc string, 
 		}
 	}
 
+	if err := renderHelpers(fs, outputLoc, fileExtensionPrefix); err != nil {
+		return fmt.Errorf("error rendering helpers: %w", err)
+	}
+
+	return nil
+}
+
+func renderHelpers(fs embed.FS, outputLoc string, fileExtensionPrefix string) error {
+	wg := new(sync.WaitGroup)
+	errs := new(sync.Map)
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		tmpl, err := template.New("db.tmpl").Funcs(sprig.TxtFuncMap()).Funcs(Helpers).ParseFS(fs, "templates/db.tmpl")
+		if err != nil {
+			errs.Store("error parsing db template", err)
+			return
+		}
+
+		if err := generate(&templateInfo{
+			OutputDir: outputLoc,
+		}, tmpl, outputLoc, fileExtensionPrefix); err != nil {
+			errs.Store("error generating db template", err)
+		}
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		tmpl, err := template.New("errors.tmpl").Funcs(sprig.TxtFuncMap()).Funcs(Helpers).ParseFS(fs, "templates/errors.tmpl")
+		if err != nil {
+			errs.Store("error parsing errors template", err)
+			return
+		}
+
+		if err := generate(&templateInfo{
+			OutputDir: outputLoc,
+		}, tmpl, outputLoc, fileExtensionPrefix); err != nil {
+			errs.Store("error generating helpers template", err)
+		}
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		tmpl, err := template.New("helpers.tmpl").Funcs(sprig.TxtFuncMap()).Funcs(Helpers).ParseFS(fs, "templates/helpers.tmpl")
+		if err != nil {
+			errs.Store("error parsing helpers template", err)
+			return
+		}
+
+		if err := generate(&templateInfo{
+			OutputDir: outputLoc,
+		}, tmpl, outputLoc, fileExtensionPrefix); err != nil {
+			errs.Store("error generating helpers template", err)
+		}
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		tmpl, err := template.New("metrics.tmpl").Funcs(sprig.TxtFuncMap()).Funcs(Helpers).ParseFS(fs, "templates/metrics.tmpl")
+		if err != nil {
+			errs.Store("error parsing metrics template", err)
+			return
+		}
+
+		if err := generate(&templateInfo{
+			OutputDir: outputLoc,
+		}, tmpl, outputLoc, fileExtensionPrefix); err != nil {
+			errs.Store("error generating metrics template", err)
+		}
+	}()
+
+	wg.Wait()
+
+	errs.Range(func(key, value interface{}) bool {
+		if value != nil {
+			slog.Error(key.(string), slog.String("error", value.(error).Error()))
+		}
+
+		return true
+	})
+
 	return nil
 }
 
@@ -66,7 +153,12 @@ func generate(t *templateInfo, tmpl *template.Template, outputLoc string, fileEx
 		ext = fileExtensionPrefix + ext
 	}
 
-	fn := filepath.Join(outputLoc, xstrings.ToSnakeCase(t.Table.Name)+ext)
+	filename := strings.ReplaceAll(tmpl.Name(), ".tmpl", "")
+	if t.Table != nil {
+		filename = xstrings.ToSnakeCase(t.Table.Name)
+	}
+
+	fn := filepath.Join(outputLoc, filename+ext)
 	if err := os.MkdirAll(filepath.Dir(fn), 0750); err != nil {
 		return err
 	}
