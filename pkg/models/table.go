@@ -60,6 +60,16 @@ func (t *Table) setPrimaryKey(con *ast.Constraint) {
 		t.PrimaryKey.Columns[i].InPrimaryKey = true
 		t.PrimaryKey.Columns[i].InUniqueKey = true
 	}
+
+	for _, col := range t.Columns {
+		for _, pk := range t.PrimaryKey.Columns {
+			if col.Name == pk.Name {
+				col.InPrimaryKey = true
+				col.InUniqueKey = true
+				col.Nullable = false
+			}
+		}
+	}
 }
 
 func (t *Table) addKey(con *ast.Constraint) {
