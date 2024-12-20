@@ -2,7 +2,7 @@
 {{- $struct := .Name | structify -}}
 // Delete deletes the {{ $struct }} from the database.
 func (m *{{ $struct }}) Delete(db DB) error {
-    t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("delete_{{ $struct | structify -}}"))
+    t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("delete_" + {{ $struct }}TableName))
     defer t.ObserveDuration()
 
     {{ if identity_columns . -}}

@@ -16,6 +16,12 @@ import (
 )
 {{ with .Table }}
 {{ $struct := .Name | structify }}
+
+const (
+    // {{ $struct }}TableName is the name of the table for the {{ $struct }} model.
+    {{ $struct }}TableName = "{{ .Name }}"
+)
+
 // {{ $struct }} represents a row from '{{ .Name }}'.
 {{- if .Comment }}
 // {{ .Comment }}
@@ -136,7 +142,7 @@ func (m *{{ $struct }}) Get{{ $local_col | structify }}{{ $foreign_struct }}(db 
 //
 // Generated from index '{{ $key.Name }}' of type '{{ $key.Type }}'.
 func {{ $struct }}By{{ range $i, $col := $key.Columns }}{{ $col.Name | structify }}{{ end }}(db DB, {{ range $i, $col := $key.Columns }}{{ if $i }}, {{ end }}{{ $col.Name | structify | lcfirst }} {{ get_type $col}}{{ end }}) ({{ if not $uniq }}[]{{ end }}*{{ $struct }}, error) {
-    t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("insert_{{ $struct | structify -}}"))
+    t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("insert_" + {{ $struct | structify }}TableName))
     defer t.ObserveDuration()
 
 	const sqlstr = "SELECT {{ range $i, $column := $.Table.Columns }}{{ if $i }}, {{ end }}`{{ $column.Name }}`{{ end }} " +

@@ -2,7 +2,7 @@
 {{- $struct := .Name | structify -}}
 // Insert inserts the {{ $struct }} to the database.
 func (m *{{ $struct }}) Insert(db DB) error {
-    t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("insert_{{ $struct | structify -}}"))
+    t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("insert_" + {{ $struct | structify }}TableName))
     defer t.ObserveDuration()
 
     {{ $autoinc := autoinc_column . }}
@@ -37,7 +37,7 @@ func InsertMany{{ $struct }}s(db DB, ms ...*{{ $struct }}) error {
         return nil
     }
 
-    t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("insert_many_{{ $struct | structify -}}"))
+    t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("insert_many_" + {{ $struct | structify }}TableName))
     defer t.ObserveDuration()
 
     vals := make([]any, 0, len(ms))
@@ -46,7 +46,7 @@ func InsertMany{{ $struct }}s(db DB, ms ...*{{ $struct }}) error {
         vals = append(vals, []any{*m})
     }
 
-    sqlstr, args, err := inserter.NewBatch(vals, inserter.WithTable("{{ .Name }}")).GenerateSQL()
+    sqlstr, args, err := inserter.NewBatch(vals, inserter.WithTable({{ $struct | structify }}TableName)).GenerateSQL()
     if err != nil {
         return fmt.Errorf("failed to create batch insert: %w", err)
     }
