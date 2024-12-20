@@ -12,7 +12,7 @@ require (
 	github.com/huandu/xstrings v1.5.0
 	github.com/jacobbrewer1/vaulty v0.1.5
 	github.com/jmoiron/sqlx v1.4.0
-	github.com/pingcap/tidb/pkg/parser v0.0.0-20241101162255-241c10294b9c
+	github.com/pingcap/tidb/pkg/parser v0.0.0-20241220080229-acba0cd1e2b0
 	github.com/stretchr/testify v1.10.0
 )
 
