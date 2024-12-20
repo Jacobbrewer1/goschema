@@ -33,7 +33,7 @@ func generateConnectionStr(vs *hashiVault.Secret) string {
 
 func main() {
 	vc, err := vaulty.NewClient(
-		vaulty.WithGeneratedVaultClient(*vaultAddr),
+		vaulty.WithAddr(*vaultAddr),
 		vaulty.WithUserPassAuth(
 			*vaultUser,
 			*vaultPass,
