@@ -3,7 +3,7 @@
 // InsertWithUpdate inserts the {{ $struct }} to the database, and tries to update
 // on unique constraint violations.
 func (m *{{ $struct }}) InsertWithUpdate(db DB) error {
-    t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("insert_update_{{ $struct | structify -}}"))
+    t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("insert_update_" + {{ $struct }}TableName))
     defer t.ObserveDuration()
 
     {{ $autoinc := autoinc_column . }}

@@ -2,7 +2,7 @@
 {{- $struct := .Name | structify -}}
 // Update updates the {{ $struct }} in the database.
 func (m *{{ $struct }}) Update(db DB) error {
-    t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("update_{{ $struct | structify -}}"))
+    t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("update_" + {{ $struct }}TableName))
     defer t.ObserveDuration()
 
     {{ $cols := non_identity_columns . -}}
@@ -32,7 +32,7 @@ func (m *{{ $struct }}) Patch(db DB, newT *{{ $struct }}) error {
         return errors.New("new {{ .Name }} is nil")
     }
 
-	res, err := patcher.NewDiffSQLPatch(m, newT, patcher.WithTable("{{ .Name }}"))
+	res, err := patcher.NewDiffSQLPatch(m, newT, patcher.WithTable({{ $struct | structify -}}TableName))
 	if err != nil {
 		return fmt.Errorf("new diff sql patch: %w", err)
 	}
