@@ -43,7 +43,7 @@ func InsertMany{{ $struct }}s(db DB, ms ...*{{ $struct }}) error {
     vals := make([]any, 0, len(ms))
     for _, m := range ms {
         // Dereference the pointer to get the struct value.
-        vals = append(vals, []any{*m})
+        vals = append(vals, any(*m))
     }
 
     sqlstr, args, err := inserter.NewBatch(vals, inserter.WithTable({{ $struct | structify }}TableName)).GenerateSQL()
