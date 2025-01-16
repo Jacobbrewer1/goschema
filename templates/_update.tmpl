@@ -32,6 +32,9 @@ func (m *{{ $struct }}) Patch(db DB, newT *{{ $struct }}) error {
         return errors.New("new {{ .Name }} is nil")
     }
 
+    t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("patch_" + {{ $struct }}TableName))
+    defer t.ObserveDuration()
+
 	res, err := patcher.NewDiffSQLPatch(m, newT, patcher.WithTable({{ $struct | structify -}}TableName))
 	if err != nil {
 		return fmt.Errorf("new diff sql patch: %w", err)
