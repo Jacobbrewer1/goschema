@@ -7,7 +7,7 @@ import (
 	"text/template"
 
 	"github.com/huandu/xstrings"
-	"github.com/jacobbrewer1/goschema/pkg/models"
+	"github.com/jacobbrewer1/goschema/pkg/entities"
 )
 
 // Helpers defines the map of functions exposed to generation templates
@@ -29,12 +29,12 @@ var Helpers = template.FuncMap{
 }
 
 // hasPrimaryKey returns true if the table has a primary key
-func hasPrimaryKey(t *models.Table) bool {
+func hasPrimaryKey(t *entities.Table) bool {
 	return t.PrimaryKey != nil
 }
 
 // hasAutoIncrementingKey returns true if the table has an auto-incrementing key
-func hasAutoIncrementingKey(t *models.Table) bool {
+func hasAutoIncrementingKey(t *entities.Table) bool {
 	for _, col := range t.Columns {
 		if col.AutoIncrementing {
 			return true
@@ -45,7 +45,7 @@ func hasAutoIncrementingKey(t *models.Table) bool {
 }
 
 // primaryAutoIncColumn returns a column that is both auto-incrementing and part of the primary key, if any
-func primaryAutoIncColumn(t *models.Table) *models.Column {
+func primaryAutoIncColumn(t *entities.Table) *entities.Column {
 	for _, col := range t.Columns {
 		if col.AutoIncrementing && col.InPrimaryKey {
 			return col
@@ -56,7 +56,7 @@ func primaryAutoIncColumn(t *models.Table) *models.Column {
 }
 
 // autoIncColumn returns the auto-incrementing column, if any
-func autoIncColumn(t *models.Table) *models.Column {
+func autoIncColumn(t *entities.Table) *entities.Column {
 	for _, col := range t.Columns {
 		if col.AutoIncrementing {
 			return col
@@ -67,8 +67,8 @@ func autoIncColumn(t *models.Table) *models.Column {
 }
 
 // nonAutoIncColumns returns the non-auto-incrementing columns, if any
-func nonAutoIncColumns(t *models.Table) []*models.Column {
-	cols := make([]*models.Column, 0, len(t.Columns)-1)
+func nonAutoIncColumns(t *entities.Table) []*entities.Column {
+	cols := make([]*entities.Column, 0, len(t.Columns)-1)
 	for _, col := range t.Columns {
 		if !col.AutoIncrementing {
 			cols = append(cols, col)
@@ -82,7 +82,7 @@ func nonAutoIncColumns(t *models.Table) []*models.Column {
 // Columns uniquely identifying a row relies on being in at least one of the following:
 //   - a primary key
 //   - a unique key
-func identityColumns(t *models.Table) []*models.Column {
+func identityColumns(t *entities.Table) []*entities.Column {
 	if t.PrimaryKey != nil {
 		return t.PrimaryKey.Columns
 	}
@@ -101,18 +101,18 @@ func identityColumns(t *models.Table) []*models.Column {
 // Columns that are not uniquely identifying must not be in any of the following:
 //   - a primary key
 //   - a unique key
-func nonIdentityColumns(t *models.Table) []*models.Column {
+func nonIdentityColumns(t *entities.Table) []*entities.Column {
 	cols := identityColumns(t)
 	if cols == nil {
 		return t.Columns
 	}
 
-	checker := make(map[*models.Column]struct{}, len(cols))
+	checker := make(map[*entities.Column]struct{}, len(cols))
 	for _, col := range cols {
 		checker[col] = struct{}{}
 	}
 
-	ret := make([]*models.Column, 0, len(t.Columns)-len(cols))
+	ret := make([]*entities.Column, 0, len(t.Columns)-len(cols))
 	for _, col := range t.Columns {
 		if _, ok := checker[col]; !ok {
 			ret = append(ret, col)
@@ -134,8 +134,8 @@ func structify(s string) string {
 }
 
 // enumColumns returns the columns which are enum types
-func enumColumns(t *models.Table) []*models.Column {
-	ret := make([]*models.Column, 0)
+func enumColumns(t *entities.Table) []*entities.Column {
+	ret := make([]*entities.Column, 0)
 	for _, col := range t.Columns {
 		if col.Type == "enum" {
 			ret = append(ret, col)
@@ -148,9 +148,9 @@ func enumColumns(t *models.Table) []*models.Column {
 // uniqueColumnKeys returns a list of keys, none of which have the same set of columns as each other
 // This is required because you can have mulitple indexs including the exact same columns in the same order,
 // but of different types (unique, non-unique, etc). Includes the primary key, if any.
-func uniqueColumnKeys(t *models.Table) []models.Key {
+func uniqueColumnKeys(t *entities.Table) []entities.Key {
 	m := make(map[string]struct{}, len(t.Keys))
-	keys := make([]models.Key, 0, len(t.Keys))
+	keys := make([]entities.Key, 0, len(t.Keys))
 	if t.PrimaryKey != nil {
 		keys = append(keys, *t.PrimaryKey)
 		m[fmt.Sprint(t.PrimaryKey.Columns)] = struct{}{}
@@ -167,14 +167,14 @@ func uniqueColumnKeys(t *models.Table) []models.Key {
 }
 
 // sortedColumns returns a slice of the columns for a given table sorted alphabetically
-func sortedColumns(t *models.Table) []*models.Column {
-	ret := make([]*models.Column, len(t.Columns))
+func sortedColumns(t *entities.Table) []*entities.Column {
+	ret := make([]*entities.Column, len(t.Columns))
 	copy(ret, t.Columns)
 	sort.SliceStable(ret, func(i, j int) bool { return ret[i].Name < ret[j].Name })
 	return ret
 }
 
-func getType(col *models.Column) string {
+func getType(col *entities.Column) string {
 	switch strings.ToLower(col.Type) {
 	case "bigint":
 		if col.Nullable {
@@ -263,7 +263,7 @@ func getType(col *models.Column) string {
 	}
 }
 
-func getTags(col *models.Column) string {
+func getTags(col *entities.Column) string {
 	tags := fmt.Sprintf("`db:\"%s", col.Name)
 	if col.InPrimaryKey {
 		tags += ",pk"

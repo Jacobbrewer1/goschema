@@ -6,16 +6,16 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/jacobbrewer1/goschema/pkg/models"
+	"github.com/jacobbrewer1/goschema/pkg/entities"
 	"github.com/pingcap/tidb/pkg/parser"
 	"github.com/pingcap/tidb/pkg/parser/ast"
 	_ "github.com/pingcap/tidb/pkg/parser/test_driver"
 )
 
 // LoadSQL loads all SQL files in the given paths and parses them
-func LoadSQL(paths ...string) ([]*models.Table, error) {
+func LoadSQL(paths ...string) ([]*entities.Table, error) {
 	p := parser.New()
-	tables := make([]*models.Table, 0)
+	tables := make([]*entities.Table, 0)
 
 	for _, path := range paths {
 		matches, err := filepath.Glob(path)
@@ -23,7 +23,7 @@ func LoadSQL(paths ...string) ([]*models.Table, error) {
 			return nil, err
 		}
 		for _, m := range matches {
-			var matchedTables []*models.Table
+			var matchedTables []*entities.Table
 			if fi, err := os.Stat(m); err != nil {
 				return nil, err
 			} else if fi.IsDir() {
@@ -49,7 +49,7 @@ func LoadSQL(paths ...string) ([]*models.Table, error) {
 	return tables, nil
 }
 
-func parseSQL(p *parser.Parser, path string) ([]*models.Table, error) {
+func parseSQL(p *parser.Parser, path string) ([]*entities.Table, error) {
 	sql, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
@@ -73,7 +73,7 @@ func parseSQL(p *parser.Parser, path string) ([]*models.Table, error) {
 		return nil, fmt.Errorf("error parsing SQL: %w", err)
 	}
 
-	tables := make([]*models.Table, 0, len(stmts))
+	tables := make([]*entities.Table, 0, len(stmts))
 	for _, stmt := range stmts {
 		ct, ok := stmt.(*ast.CreateTableStmt)
 		if !ok {
@@ -81,7 +81,7 @@ func parseSQL(p *parser.Parser, path string) ([]*models.Table, error) {
 			continue
 		}
 
-		t, err := models.NewTable(ct)
+		t, err := entities.NewTable(ct)
 		if err != nil {
 			return nil, fmt.Errorf("error creating table from statement: %w", err)
 		}

@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/jacobbrewer1/goschema/pkg/models"
+	"github.com/jacobbrewer1/goschema/usql"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -32,6 +34,7 @@ var (
 type Versioning interface {
 	MigrateUp() error
 	MigrateDown() error
+	GetStatus() ([]*models.GoschemaMigrationVersion, error)
 }
 
 type versioning struct {
@@ -116,7 +119,8 @@ func (v *versioning) createVersionTable(schema string) error {
 	sqlStmt := fmt.Sprintf(`
 		CREATE TABLE %s.%s (
 			version VARCHAR(255) NOT NULL PRIMARY KEY,
-		    is_current BOOLEAN NOT NULL DEFAULT false
+		    is_current BOOLEAN NOT NULL DEFAULT false,
+		    created_at TIMESTAMP NOT NULL
 		);
 `, schema, versionTable)
 
@@ -187,8 +191,13 @@ func (v *versioning) setCurrentVersion(version string) error {
 		return fmt.Errorf("error updating current version: %w", err)
 	}
 
-	_, err = v.db.Exec("INSERT INTO "+versionTable+" (version, is_current) VALUES (?, true) ON DUPLICATE KEY UPDATE is_current = true", version)
-	if err != nil {
+	newVersion := &models.GoschemaMigrationVersion{
+		Version:   version,
+		IsCurrent: 1,
+		CreatedAt: time.Now().UTC(),
+	}
+
+	if err := newVersion.InsertWithUpdate(v.db); err != nil {
 		return fmt.Errorf("error setting current version: %w", err)
 	}
 
@@ -202,8 +211,13 @@ func (v *versioning) mustCreateHistory(version string, action string) {
 }
 
 func (v *versioning) createHistory(version string, action string) error {
-	_, err := v.db.Exec("INSERT INTO "+historyTable+" (version, action, created_at) VALUES (?, ?, ?)", version, action, time.Now().UTC())
-	if err != nil {
+	newHistory := &models.GoschemaMigrationHistory{
+		Version:   version,
+		Action:    usql.Enum(action),
+		CreatedAt: time.Now().UTC(),
+	}
+
+	if err := newHistory.Insert(v.db); err != nil {
 		return fmt.Errorf("error creating history: %w", err)
 	}
 

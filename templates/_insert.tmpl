@@ -52,7 +52,7 @@ func InsertMany{{ $struct }}s(db DB, ms ...*{{ $struct }}) error {
     }
 
     DBLog(sqlstr, args...)
-    {{ if $autoinc }}res{{ else }}_{{ end }}, err := db.Exec(sqlstr, args...)
+    {{ if $autoinc }}res{{ else }}_{{ end }}, err {{ if $autoinc }}:{{ end }}= db.Exec(sqlstr, args...)
     if err != nil {
         return err
     }
