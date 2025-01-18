@@ -13,15 +13,15 @@ import (
 
 	"github.com/Masterminds/sprig"
 	"github.com/huandu/xstrings"
-	"github.com/jacobbrewer1/goschema/pkg/models"
+	"github.com/jacobbrewer1/goschema/pkg/entities"
 )
 
 type templateInfo struct {
 	OutputDir string
-	Table     *models.Table
+	Table     *entities.Table
 }
 
-func RenderTemplates(tables []*models.Table, templatesLoc, outputLoc string, fileExtensionPrefix string) error {
+func RenderTemplates(tables []*entities.Table, templatesLoc, outputLoc string, fileExtensionPrefix string) error {
 	tmpl, err := template.New("model.tmpl").Funcs(sprig.TxtFuncMap()).Funcs(Helpers).ParseGlob(templatesLoc)
 	if err != nil {
 		return fmt.Errorf("error parsing templates: %w", err)
@@ -40,7 +40,7 @@ func RenderTemplates(tables []*models.Table, templatesLoc, outputLoc string, fil
 }
 
 // RenderWithTemplates renders templates that are provided as embedded files
-func RenderWithTemplates(fs embed.FS, tables []*models.Table, outputLoc string, fileExtensionPrefix string) error {
+func RenderWithTemplates(fs embed.FS, tables []*entities.Table, outputLoc string, fileExtensionPrefix string) error {
 	tmpl, err := template.New("model.tmpl").Funcs(sprig.TxtFuncMap()).Funcs(Helpers).ParseFS(fs, "templates/*.tmpl")
 	if err != nil {
 		return fmt.Errorf("error parsing templates: %w", err)
