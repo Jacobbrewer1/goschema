@@ -34,6 +34,7 @@ var (
 type Versioning interface {
 	MigrateUp() error
 	MigrateDown() error
+	GetStatus() ([]*models.GoschemaMigrationVersion, error)
 }
 
 type versioning struct {

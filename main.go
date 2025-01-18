@@ -20,6 +20,7 @@ func main() {
 	subcommands.Register(new(generateCmd), "")
 	subcommands.Register(new(createCmd), "")
 	subcommands.Register(new(migrateCmd), "")
+	subcommands.Register(new(statusCmd), "")
 
 	flag.Parse()
 
