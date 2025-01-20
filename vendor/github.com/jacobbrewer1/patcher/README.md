@@ -1,5 +1,9 @@
 # Patcher
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/Jacobbrewer1/patcher.svg)](https://pkg.go.dev/github.com/Jacobbrewer1/patcher)
+[![Go Report Card](https://goreportcard.com/badge/github.com/jacobbrewer1/patcher)](https://goreportcard.com/report/github.com/jacobbrewer1/patcher)
+
+
 Patcher is a GO library that provides a simple way to generate and SQL patches from structs. The library was built out
 of the need to generate patches for a database; when a new field is added to a struct, this would result in a bunch of
 new `if` checks to be created in the codebase. This library aims to solve that problem by generating the SQL patches for
@@ -17,6 +21,30 @@ you.
 * **Join Support**: It supports generating SQL joins by creating structs that implement the Joiner interface,
   simplifying
   the process of managing related data across multiple tables.
+
+## Why Use Patcher?
+
+* **Saves Time**: It saves time by automatically generating SQL queries from structs, reducing the need to write and
+  maintain SQL statements manually.
+* **Reduces Errors**: It reduces the risk of errors by automatically generating SQL queries based on struct fields,
+  eliminating the need to manually update queries when struct fields change.
+* **Simplifies Code**: It simplifies the codebase by reducing the amount of boilerplate code and if-else conditions
+  required to handle different struct fields, making the code easier to read and maintain.
+* **Streamlines Data Synchronization**: It streamlines the process of synchronizing data changes by allowing you to
+  inject changes from one struct to another and generate update scripts based on differences.
+* **Supports Joins**: It supports generating SQL joins by creating structs that implement the Joiner interface, making it
+  easier to manage related data across multiple tables.
+* **Flexible Configuration**: It provides flexible configuration options to customize the SQL generation process, such as
+  including zero or nil values in the diff.
+* **Easy Integration**: It is easy to integrate into existing projects and can be used with any Go project that needs to
+  generate SQL queries from structs.
+* **Open Source**: It is open-source and available under the Apache 2.0 license.
+* **Actively Maintained**: It is actively maintained and updated to support the latest Go versions and best practices,
+  ensuring compatibility and reliability.
+* **Comprehensive Documentation**: It has comprehensive documentation and examples to help you get started quickly and
+  understand how to use the library effectively.
+* **Tested and Reliable**: It is thoroughly tested and reliable, ensuring that it works as expected and meets the
+  requirements of your project.
 
 ## Usage
 
