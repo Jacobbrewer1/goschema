@@ -198,3 +198,22 @@ func GoschemaMigrationVersionByVersion(db DB, version string) (*GoschemaMigratio
 
 	return &m, nil
 }
+
+// GetAllGoschemaMigrationVersion retrieves all rows from 'goschema_migration_version' as a slice of GoschemaMigrationVersion.
+//
+// Generated from table 'goschema_migration_version'.
+func GetAllGoschemaMigrationVersion(db DB) ([]*GoschemaMigrationVersion, error) {
+	t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("get_all_" + GoschemaMigrationVersionTableName))
+	defer t.ObserveDuration()
+
+	const sqlstr = "SELECT `version`, `is_current`, `created_at` " +
+		"FROM goschema_migration_version"
+
+	DBLog(sqlstr)
+	m := make([]*GoschemaMigrationVersion, 0)
+	if err := db.Select(&m, sqlstr); err != nil {
+		return nil, fmt.Errorf("failed to get all GoschemaMigrationVersion: %w", err)
+	}
+
+	return m, nil
+}
