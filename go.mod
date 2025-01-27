@@ -11,7 +11,7 @@ require (
 	github.com/hashicorp/vault/api v1.15.0
 	github.com/huandu/xstrings v1.5.0
 	github.com/jacobbrewer1/patcher v0.1.16
-	github.com/jacobbrewer1/vaulty v0.1.6
+	github.com/jacobbrewer1/vaulty v0.1.7
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/pingcap/tidb/pkg/parser v0.0.0-20241220080229-acba0cd1e2b0
 	github.com/prometheus/client_golang v1.20.5

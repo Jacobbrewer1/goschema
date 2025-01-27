@@ -112,7 +112,7 @@ github.com/imdario/mergo
 ## explicit; go 1.23
 github.com/jacobbrewer1/patcher
 github.com/jacobbrewer1/patcher/inserter
-# github.com/jacobbrewer1/vaulty v0.1.6
+# github.com/jacobbrewer1/vaulty v0.1.7
 ## explicit; go 1.23
 github.com/jacobbrewer1/vaulty
 # github.com/jmoiron/sqlx v1.4.0
