@@ -230,6 +230,25 @@ func GoschemaMigrationHistoryById(db DB, id int) (*GoschemaMigrationHistory, err
 	return &m, nil
 }
 
+// GetAllGoschemaMigrationHistory retrieves all rows from 'goschema_migration_history' as a slice of GoschemaMigrationHistory.
+//
+// Generated from table 'goschema_migration_history'.
+func GetAllGoschemaMigrationHistory(db DB) ([]*GoschemaMigrationHistory, error) {
+	t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("get_all_" + GoschemaMigrationHistoryTableName))
+	defer t.ObserveDuration()
+
+	const sqlstr = "SELECT `id`, `version`, `action`, `created_at` " +
+		"FROM goschema_migration_history"
+
+	DBLog(sqlstr)
+	m := make([]*GoschemaMigrationHistory, 0)
+	if err := db.Select(&m, sqlstr); err != nil {
+		return nil, fmt.Errorf("failed to get all GoschemaMigrationHistory: %w", err)
+	}
+
+	return m, nil
+}
+
 // Valid values for the 'Action' enum column
 var (
 	GoschemaMigrationHistoryActionMigratingUp    = usql.NewEnum("migrating_up")
