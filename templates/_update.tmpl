@@ -41,7 +41,7 @@ func (m *{{ $struct }}) Patch(db DB, newT *{{ $struct }}) error {
     	case errors.Is(err, patcher.ErrNoChanges):
     		return nil
     	default:
-    		return fmt.Errorf("failed to generate patch: %w", err)
+    		return fmt.Errorf("new diff sql patch: %w", err)
     	}
 	}
 
