@@ -37,17 +37,17 @@ func (m *{{ $struct }}) Patch(db DB, newT *{{ $struct }}) error {
 
 	res, err := patcher.NewDiffSQLPatch(m, newT, patcher.WithTable({{ $struct | structify -}}TableName))
 	if err != nil {
-		return fmt.Errorf("new diff sql patch: %w", err)
+		switch {
+    	case errors.Is(err, patcher.ErrNoChanges):
+    		return nil
+    	default:
+    		return fmt.Errorf("failed to generate patch: %w", err)
+    	}
 	}
 
 	sqlstr, args, err := res.GenerateSQL()
 	if err != nil {
-		switch {
-		case errors.Is(err, patcher.ErrNoChanges):
-			return nil
-		default:
-			return fmt.Errorf("failed to create patch: %w", err)
-		}
+	    return fmt.Errorf("failed to generate patch: %w", err)
 	}
 
 	DBLog(sqlstr, args...)
