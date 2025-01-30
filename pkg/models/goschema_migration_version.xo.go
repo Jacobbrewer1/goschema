@@ -99,38 +99,6 @@ func (m *GoschemaMigrationVersion) Update(db DB) error {
 	return nil
 }
 
-func (m *GoschemaMigrationVersion) Patch(db DB, newT *GoschemaMigrationVersion) error {
-	if newT == nil {
-		return errors.New("new goschema_migration_version is nil")
-	}
-
-	t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("patch_" + GoschemaMigrationVersionTableName))
-	defer t.ObserveDuration()
-
-	res, err := patcher.NewDiffSQLPatch(m, newT, patcher.WithTable(GoschemaMigrationVersionTableName))
-	if err != nil {
-		return fmt.Errorf("new diff sql patch: %w", err)
-	}
-
-	sqlstr, args, err := res.GenerateSQL()
-	if err != nil {
-		switch {
-		case errors.Is(err, patcher.ErrNoChanges):
-			return nil
-		default:
-			return fmt.Errorf("failed to create patch: %w", err)
-		}
-	}
-
-	DBLog(sqlstr, args...)
-	_, err = db.Exec(sqlstr, args...)
-	if err != nil {
-		return fmt.Errorf("failed to execute patch: %w", err)
-	}
-
-	return nil
-}
-
 // InsertWithUpdate inserts the GoschemaMigrationVersion to the database, and tries to update
 // on unique constraint violations.
 func (m *GoschemaMigrationVersion) InsertWithUpdate(db DB) error {
@@ -197,6 +165,56 @@ func GoschemaMigrationVersionByVersion(db DB, version string) (*GoschemaMigratio
 	}
 
 	return &m, nil
+}
+
+type goschemaMigrationVersionPKWherer struct {
+	ids []interface{}
+}
+
+func (m goschemaMigrationVersionPKWherer) Where() (string, []interface{}) {
+	return "`version` = ?", m.ids
+}
+
+// Patch updates the GoschemaMigrationVersion in the database.
+//
+// Generated from primary key.
+func (m *GoschemaMigrationVersion) Patch(db DB, newT *GoschemaMigrationVersion) error {
+	if newT == nil {
+		return errors.New("new primary is nil")
+	}
+
+	t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("patch_" + GoschemaMigrationVersionTableName))
+	defer t.ObserveDuration()
+
+	res, err := patcher.NewDiffSQLPatch(
+		m,
+		newT,
+		patcher.WithTable(GoschemaMigrationVersionTableName),
+		patcher.WithWhere(&goschemaMigrationVersionPKWherer{
+			ids: []interface{}{m.Version},
+		}),
+	)
+	if err != nil {
+		switch {
+		case errors.Is(err, patcher.ErrNoChanges):
+			return nil
+		default:
+			return fmt.Errorf("new diff sql patch: %w", err)
+		}
+	}
+
+	sqlstr, args, err := res.GenerateSQL()
+	if err != nil {
+		return fmt.Errorf("failed to generate patch: %w", err)
+	}
+
+	DBLog(sqlstr, args...)
+	_, err = db.Exec(sqlstr, args...)
+	if err != nil {
+		return fmt.Errorf("failed to execute patch: %w", err)
+	}
+
+	return nil
 }
 
 // GetAllGoschemaMigrationVersion retrieves all rows from 'goschema_migration_version' as a slice of GoschemaMigrationVersion.
