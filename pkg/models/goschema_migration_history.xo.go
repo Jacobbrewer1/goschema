@@ -120,38 +120,6 @@ func (m *GoschemaMigrationHistory) Update(db DB) error {
 	return nil
 }
 
-func (m *GoschemaMigrationHistory) Patch(db DB, newT *GoschemaMigrationHistory) error {
-	if newT == nil {
-		return errors.New("new goschema_migration_history is nil")
-	}
-
-	t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("patch_" + GoschemaMigrationHistoryTableName))
-	defer t.ObserveDuration()
-
-	res, err := patcher.NewDiffSQLPatch(m, newT, patcher.WithTable(GoschemaMigrationHistoryTableName))
-	if err != nil {
-		return fmt.Errorf("new diff sql patch: %w", err)
-	}
-
-	sqlstr, args, err := res.GenerateSQL()
-	if err != nil {
-		switch {
-		case errors.Is(err, patcher.ErrNoChanges):
-			return nil
-		default:
-			return fmt.Errorf("failed to create patch: %w", err)
-		}
-	}
-
-	DBLog(sqlstr, args...)
-	_, err = db.Exec(sqlstr, args...)
-	if err != nil {
-		return fmt.Errorf("failed to execute patch: %w", err)
-	}
-
-	return nil
-}
-
 // InsertWithUpdate inserts the GoschemaMigrationHistory to the database, and tries to update
 // on unique constraint violations.
 func (m *GoschemaMigrationHistory) InsertWithUpdate(db DB) error {
@@ -228,6 +196,56 @@ func GoschemaMigrationHistoryById(db DB, id int) (*GoschemaMigrationHistory, err
 	}
 
 	return &m, nil
+}
+
+type goschemaMigrationHistoryPKWherer struct {
+	ids []interface{}
+}
+
+func (m goschemaMigrationHistoryPKWherer) Where() (string, []interface{}) {
+	return "`id` = ?", m.ids
+}
+
+// Patch updates the GoschemaMigrationHistory in the database.
+//
+// Generated from primary key.
+func (m *GoschemaMigrationHistory) Patch(db DB, newT *GoschemaMigrationHistory) error {
+	if newT == nil {
+		return errors.New("new primary is nil")
+	}
+
+	t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("patch_" + GoschemaMigrationHistoryTableName))
+	defer t.ObserveDuration()
+
+	res, err := patcher.NewDiffSQLPatch(
+		m,
+		newT,
+		patcher.WithTable(GoschemaMigrationHistoryTableName),
+		patcher.WithWhere(&goschemaMigrationHistoryPKWherer{
+			ids: []interface{}{m.Id},
+		}),
+	)
+	if err != nil {
+		switch {
+		case errors.Is(err, patcher.ErrNoChanges):
+			return nil
+		default:
+			return fmt.Errorf("new diff sql patch: %w", err)
+		}
+	}
+
+	sqlstr, args, err := res.GenerateSQL()
+	if err != nil {
+		return fmt.Errorf("failed to generate patch: %w", err)
+	}
+
+	DBLog(sqlstr, args...)
+	_, err = db.Exec(sqlstr, args...)
+	if err != nil {
+		return fmt.Errorf("failed to execute patch: %w", err)
+	}
+
+	return nil
 }
 
 // GetAllGoschemaMigrationHistory retrieves all rows from 'goschema_migration_history' as a slice of GoschemaMigrationHistory.
