@@ -110,6 +110,56 @@ func {{ $struct }}By{{ range $i, $col := $key.Columns }}{{ $col.Name | structify
 
 	return &m, nil
 }
+
+type {{ lcfirst $struct }}IdWherer struct {
+    ids []interface{}
+}
+
+func (m {{ lcfirst $struct }}IdWherer) Where() (string, []interface{}) {
+    return "{{ range $i, $col := $key.Columns }}{{ if $i }} AND {{ end }}`{{ $col.Name }}` = ?{{ end }}", m.ids
+}
+
+// Patch updates the {{ $struct }} in the database.
+//
+// Generated from primary key.
+func (m *{{ $struct }}) Patch(db DB, newT *{{ $struct }}) error {
+    if newT == nil {
+        return errors.New("new {{ .Name }} is nil")
+    }
+
+    t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("patch_" + {{ $struct }}TableName))
+    defer t.ObserveDuration()
+
+	res, err := patcher.NewDiffSQLPatch(
+	    m,
+	    newT,
+	    patcher.WithTable({{ $struct }}TableName),
+	    patcher.WithWhere(&{{ lcfirst $struct }}IdWherer{
+	        ids: []interface{}{ {{ range $i, $col := $key.Columns }}m.{{ $col.Name | structify }},{{ end }} },
+	    }),
+	)
+	if err != nil {
+		switch {
+    	case errors.Is(err, patcher.ErrNoChanges):
+    		return nil
+    	default:
+    		return fmt.Errorf("new diff sql patch: %w", err)
+    	}
+	}
+
+	sqlstr, args, err := res.GenerateSQL()
+	if err != nil {
+	    return fmt.Errorf("failed to generate patch: %w", err)
+	}
+
+	DBLog(sqlstr, args...)
+	_, err = db.Exec(sqlstr, args...)
+	if err != nil {
+		return fmt.Errorf("failed to execute patch: %w", err)
+	}
+
+	return nil
+}
 {{ range $constraint := $.Table.Constraints -}}
 {{ $constraint_ref_len := len $constraint.References }}
 {{ if eq $constraint_ref_len 1 -}}
