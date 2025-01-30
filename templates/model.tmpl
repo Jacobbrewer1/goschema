@@ -137,6 +137,11 @@ func (m *{{ $struct }}) Patch(db DB, newT *{{ $struct }}) error {
 	    patcher.WithWhere(&{{ lcfirst $struct }}PKWherer{
 	        ids: []interface{}{ {{ range $i, $col := $key.Columns }}m.{{ $col.Name | structify }},{{ end }} },
 	    }),
+	    patcher.WithIgnoredFields(
+	        {{- range $i, $col := $key.Columns }}
+	        "{{ $col.Name | structify }}",
+	        {{- end}}
+	    ),
 	)
 	if err != nil {
 		switch {
