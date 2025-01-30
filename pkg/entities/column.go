@@ -39,6 +39,9 @@ type Column struct {
 
 func (c *Column) setTypeInfo(tp *types.FieldType) {
 	c.Type = tp.EvalType().String()
+	if tp.GetType() == mysql.TypeLonglong {
+		c.Type = "bigint"
+	}
 	c.TypeSize = tp.GetFlen()
 	c.TypePrecision = tp.GetDecimal()
 	if tp.GetType() == mysql.TypeEnum {
@@ -85,7 +88,7 @@ func (c *Column) setOptions(col *ast.ColumnDef) error {
 			c.InUniqueKey = true
 		default:
 			// Ignore other options
-			slog.Warn("Unknown column option", slog.Int("type", int(opt.Tp)))
+			slog.Warn("Unhandled column option", slog.Int("type", int(opt.Tp)))
 		}
 	}
 	return nil

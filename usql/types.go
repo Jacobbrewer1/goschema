@@ -19,7 +19,7 @@ type NullBool struct {
 }
 
 // MarshalJSON implements the json.Marshaler interface for a NullBool.
-func (r NullBool) MarshalJSON() ([]byte, error) {
+func (r *NullBool) MarshalJSON() ([]byte, error) {
 	if r.Valid {
 		return json.Marshal(r.Bool)
 	}
@@ -42,6 +42,10 @@ func (r *NullBool) UnmarshalJSON(data []byte) error {
 	r.Valid = true
 
 	return nil
+}
+
+func (r NullBool) Val() bool {
+	return r.Bool
 }
 
 // NewNullBool returns a valid new NullBool for a given boolean value.
@@ -80,6 +84,10 @@ func (r *NullFloat64) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (r *NullFloat64) Val() float64 {
+	return r.Float64
+}
+
 // NewNullFloat64 returns a valid new NullFloat64 for a given float64 value.
 func NewNullFloat64(f float64) *NullFloat64 {
 	return &NullFloat64{NullFloat64: sql.NullFloat64{Float64: f, Valid: true}}
@@ -114,6 +122,10 @@ func (r *NullInt64) UnmarshalJSON(data []byte) error {
 	r.Valid = true
 
 	return nil
+}
+
+func (r NullInt64) Val() int64 {
+	return r.Int64
 }
 
 // RedisArg implements redis.Argument.
@@ -183,6 +195,10 @@ func (r *NullString) UnmarshalJSON(data []byte) error {
 	r.Valid = true
 
 	return nil
+}
+
+func (r NullString) Val() string {
+	return r.String
 }
 
 // RedisArg implements redis.Argument.
@@ -305,6 +321,10 @@ type NullDuration struct {
 	Valid bool
 }
 
+func (r NullDuration) Val() time.Duration {
+	return time.Duration(r.Duration)
+}
+
 // MarshalJSON implements the json.Marshaler interface for a NullDuration.
 func (r NullDuration) MarshalJSON() ([]byte, error) {
 	if r.Valid {
@@ -339,6 +359,11 @@ func NewNullDuration(t time.Duration) *NullDuration {
 // sql.Scanner, and sql/driver.Valuer interfaces.
 type NullTime struct {
 	sql.NullTime
+}
+
+// Val returns the time.Time value of the NullTime.
+func (r NullTime) Val() time.Time {
+	return r.Time
 }
 
 // MarshalJSON implements json.Marshaller.

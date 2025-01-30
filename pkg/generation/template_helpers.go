@@ -257,6 +257,8 @@ func getType(col *entities.Column) string {
 			return "usql.NullDuration"
 		}
 		return "usql.Duration"
+	case "json":
+		return "json.RawMessage"
 	default:
 		fmt.Println("Unknown type:", col.Type)
 		return "unknown"
