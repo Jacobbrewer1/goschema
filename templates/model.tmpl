@@ -28,7 +28,10 @@ const (
 {{- end }}
 type {{ $struct }} struct {
 	{{ range $column := .Columns -}}
-	{{ .Name | structify }} {{ get_type $column }} {{ get_tags $column }} {{ if .Comment }}// {{ .Comment }}{{ end }}
+	{{- if .Comment -}}
+	// {{ .Comment }}
+	{{- end -}}
+	{{ .Name | structify }} {{ get_type $column }} {{ get_tags $column }}
 	{{ end -}}
 }
 
@@ -182,7 +185,7 @@ func (m *{{ $struct }}) Get{{ $local_col | structify }}{{ $foreign_struct }}(db 
   }
 
   {{ end -}}
-	return {{ $foreign_struct }}By{{ $foreign_col | structify }}(db, m.{{ $local_col | structify }}{{ if $col_data.Nullable }}.{{ get_type $col_data }}{{ end }})
+	return {{ $foreign_struct }}By{{ $foreign_col | structify }}(db, m.{{ $local_col | structify }}{{ if $col_data.Nullable }}.Val(){{ end }})
 }
 {{ end -}}
 {{ end -}}
