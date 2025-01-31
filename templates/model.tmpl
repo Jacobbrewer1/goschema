@@ -220,19 +220,40 @@ func {{ $struct }}By{{ range $i, $col := $key.Columns }}{{ $col.Name | structify
 {{ end }}
 {{ end }}
 
-// GetAll{{ $struct }} retrieves all rows from '{{ .Name }}' as a slice of {{ $struct }}.
+// GetAll{{ $struct }}s retrieves all rows from '{{ .Name }}' as a slice of {{ $struct }}.
 //
 // Generated from table '{{ .Name }}'.
-func GetAll{{ $struct }}(db DB) ([]*{{ $struct }}, error) {
+func GetAll{{ $struct }}s(db DB, wheres ...patcher.Wherer) ([]*{{ $struct }}, error) {
     t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("get_all_" + {{ $struct | structify }}TableName))
     defer t.ObserveDuration()
 
-    const sqlstr = "SELECT {{ range $i, $column := $.Table.Columns }}{{ if $i }}, {{ end }}`{{ $column.Name }}`{{ end }} " +
-        "FROM {{ $.Table.Name }}"
+    args := make([]any, 0)
+    builder := new(strings.Builder)
+    builder.WriteString("SELECT {{ range $i, $column := $.Table.Columns }}{{ if $i }}, {{ end }}`{{ $column.Name }}`{{ end }}")
+    builder.WriteString(" FROM {{ $.Table.Name }}")
 
-    DBLog(sqlstr)
+    if len(wheres) > 0 {
+        builder.WriteString(" WHERE ")
+        for i, where := range wheres {
+            if i > 0 {
+                wtStr := patcher.WhereTypeAnd // default to AND
+                wt, ok := where.(patcher.WhereTyper)
+                if ok && wt.WhereType().IsValid() {
+                	wtStr = wt.WhereType()
+                }
+                builder.WriteString(string(wtStr) + " ")
+            }
+            whereStr, whereArgs := where.Where()
+            builder.WriteString(whereStr)
+            args = append(args, whereArgs...)
+        }
+    }
+
+    sqlstr := builder.String()
+    DBLog(sqlstr, args...)
+
     m := make([]*{{ $struct }}, 0)
-    if err := db.Select(&m, sqlstr); err != nil {
+    if err := db.Select(&m, sqlstr, args...); err != nil {
         return nil, fmt.Errorf("failed to get all {{ $struct }}: %w", err)
     }
 
