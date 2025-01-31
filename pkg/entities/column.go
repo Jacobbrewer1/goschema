@@ -38,9 +38,17 @@ type Column struct {
 }
 
 func (c *Column) setTypeInfo(tp *types.FieldType) {
-	c.Type = tp.EvalType().String()
-	if tp.GetType() == mysql.TypeLonglong {
+	switch {
+	case tp.GetType() == mysql.TypeTiny:
+		c.Type = "tinyint"
+	case tp.GetType() == mysql.TypeShort:
+		c.Type = "smallint"
+	case tp.GetType() == mysql.TypeInt24:
+		c.Type = "mediumint"
+	case tp.GetType() == mysql.TypeLonglong:
 		c.Type = "bigint"
+	default:
+		c.Type = tp.EvalType().String()
 	}
 	c.TypeSize = tp.GetFlen()
 	c.TypePrecision = tp.GetDecimal()
