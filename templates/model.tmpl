@@ -230,7 +230,7 @@ func GetAll{{ $struct }}s(db DB, wheres ...patcher.Wherer) ([]*{{ $struct }}, er
     args := make([]any, 0)
     builder := new(strings.Builder)
     builder.WriteString("SELECT {{ range $i, $column := $.Table.Columns }}{{ if $i }}, {{ end }}`{{ $column.Name }}`{{ end }}")
-    builder.WriteString(" FROM {{ $.Table.Name }}")
+    builder.WriteString(" FROM {{ $.Table.Name }} t")
 
     if len(wheres) > 0 {
         builder.WriteString(" WHERE ")
