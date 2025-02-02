@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 	"time"
 
 	"github.com/magefile/mage/mg" // mg contains helpful utility functions, like Deps
@@ -18,8 +19,12 @@ import (
 
 // A build step that requires additional params, or platform specific steps for example
 func Build() error {
-	mg.Deps(InstallDeps)
 	fmt.Println("Building...")
+
+	// Clear the bin folder
+	if err := os.RemoveAll("bin"); err != nil {
+		return fmt.Errorf("failed to clear bin folder: %w", err)
+	}
 
 	// Get the current commit hash
 	hash, err := exec.Command("git", "rev-parse", "--short", "HEAD").Output()
@@ -28,7 +33,14 @@ func Build() error {
 	}
 	date := time.Now().Format(time.RFC3339)
 
-	cmd := exec.Command("go", "build", "-o", "bin/goschema", fmt.Sprintf("-X main.Commit=%s -X main.Date=%s", hash, date), ".")
+	fmt.Println("Commit hash:", strings.TrimSpace(string(hash)))
+	fmt.Println("Build date:", date)
+
+	buildFlags := fmt.Sprintf("-X main.Commit=%s -X main.Date=%s", hash, date)
+
+	cmd := exec.Command("go", "build", "-o", "bin/goschema", "-ldflags", buildFlags, ".")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 	return cmd.Run()
 }
 
@@ -42,14 +54,7 @@ func Tools() error {
 func Install() error {
 	mg.Deps(Build)
 	fmt.Println("Installing...")
-	return os.Rename("./MyApp", "/usr/bin/MyApp")
-}
-
-// Manage your deps, or running package managers.
-func InstallDeps() error {
-	fmt.Println("Installing Deps...")
-	cmd := exec.Command("go", "get", "github.com/stretchr/piglatin")
-	return cmd.Run()
+	return os.Rename("bin/goschema", "/usr/local/bin/goschema")
 }
 
 // Clean up after yourself
