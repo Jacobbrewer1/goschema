@@ -41,10 +41,13 @@ jobs:
           go-version: ${{ vars.GO_VERSION }}
           cache-dependency-path: "**/*.sum"
 
-      - name: Build binaries
+      - name: Install Mage
+        run: go install github.com/magefile/mage@latest
+
+      - name: Run Mage
         run: |
-          go build -o bin/goschema .
-          go build -o bin/vaultdb ./tools/vaultdb
+          mage build
+          mage tools
 
       - name: Create Changelog
         run: |
