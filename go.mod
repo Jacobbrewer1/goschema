@@ -10,7 +10,7 @@ require (
 	github.com/google/subcommands v1.2.0
 	github.com/hashicorp/vault/api v1.15.0
 	github.com/huandu/xstrings v1.5.0
-	github.com/jacobbrewer1/patcher v0.1.16
+	github.com/jacobbrewer1/patcher v0.1.17
 	github.com/jacobbrewer1/vaulty v0.1.7
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/magefile/mage v1.15.0
@@ -66,7 +66,6 @@ require (
 	github.com/rogpeppe/go-internal v1.11.0 // indirect
 	github.com/ryanuber/go-glob v1.0.0 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
-	github.com/stretchr/piglatin v0.0.0-20140311054444-ab61287b9936 // indirect
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect

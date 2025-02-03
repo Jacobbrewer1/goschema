@@ -94,8 +94,8 @@ github.com/huandu/xstrings v1.5.0 h1:2ag3IFq9ZDANvthTwTiqSSZLjDc+BedvHPAp5tJy2TI
 github.com/huandu/xstrings v1.5.0/go.mod h1:y5/lhBue+AyNmUVz9RLU9xbLR0o4KIIExikq4ovT0aE=
 github.com/imdario/mergo v0.3.11 h1:3tnifQM4i+fbajXKBHXWEH+KvNHqojZ778UH75j3bGA=
 github.com/imdario/mergo v0.3.11/go.mod h1:jmQim1M+e3UYxmgPu/WyfjB3N3VflVyUjjjwH0dnCYA=
-github.com/jacobbrewer1/patcher v0.1.16 h1:AO3Um5QVMQibV6akHVA+OjLNB7uQGyHz4NGp51BX/fs=
-github.com/jacobbrewer1/patcher v0.1.16/go.mod h1:zEgOixvOt2wO2WmoUreN5L5qJpCOdP2eWiYd0XZULn8=
+github.com/jacobbrewer1/patcher v0.1.17 h1:qxnRb5hIQWixcu6wE8Du9s9XHsJrX2GhwP3tG+mC1XE=
+github.com/jacobbrewer1/patcher v0.1.17/go.mod h1:rurnK9D/WNAbHGO86m9naLmY5EXxrerZl6NeReFouZo=
 github.com/jacobbrewer1/vaulty v0.1.7 h1:Y1UVwFu/zwQK3octiLh95DefSfxZ0ano25UowpYfbfc=
 github.com/jacobbrewer1/vaulty v0.1.7/go.mod h1:8yPrEqRwBSjVK+CUo7vQ81cDJwIzrouoaqHYy9kX0cg=
 github.com/jmoiron/sqlx v1.4.0 h1:1PLqN7S1UYp5t4SrVVnt4nUVNemrDAtxlulVe+Qgm3o=
@@ -188,8 +188,6 @@ github.com/sergi/go-diff v1.2.0/go.mod h1:STckp+ISIX8hZLjrqAeVduY0gWCT9IjLuqbuNX
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/objx v0.5.2 h1:xuMeJ0Sdp5ZMRXx/aWO6RZxdr3beISkG5/G/aIRr3pY=
 github.com/stretchr/objx v0.5.2/go.mod h1:FRsXN1f5AsAjCGJKqEizvkpNtU+EGNCLh3NxZ/8L+MA=
-github.com/stretchr/piglatin v0.0.0-20140311054444-ab61287b9936 h1:QcF4JZjvg9uNP9SdKFXspe6keOBZ1XmXkb25badRIkY=
-github.com/stretchr/piglatin v0.0.0-20140311054444-ab61287b9936/go.mod h1:fnVlYnscMLDEmGbdH+GXr7JHxZCj7pCoRap6A74K5lY=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
 github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
