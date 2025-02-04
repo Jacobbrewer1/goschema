@@ -223,29 +223,42 @@ func {{ $struct }}By{{ range $i, $col := $key.Columns }}{{ $col.Name | structify
 // GetAll{{ $struct }}s retrieves all rows from '{{ .Name }}' as a slice of {{ $struct }}.
 //
 // Generated from table '{{ .Name }}'.
-func GetAll{{ $struct }}s(db DB, wheres ...patcher.Wherer) ([]*{{ $struct }}, error) {
+func GetAll{{ $struct }}s(db DB, filters ...any) ([]*{{ $struct }}, error) {
     t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("get_all_" + {{ $struct | structify }}TableName))
     defer t.ObserveDuration()
 
     args := make([]any, 0)
     builder := new(strings.Builder)
-    builder.WriteString("SELECT {{ range $i, $column := $.Table.Columns }}{{ if $i }}, {{ end }}`{{ $column.Name }}`{{ end }}")
-    builder.WriteString(" FROM {{ $.Table.Name }} t")
+    builder.WriteString("SELECT {{ range $i, $column := $.Table.Columns }}{{ if $i }}, {{ end }}`t.{{ $column.Name }}`{{ end }}")
 
-    if len(wheres) > 0 {
-        builder.WriteString(" WHERE ")
-        for i, where := range wheres {
-            if i > 0 {
-                wtStr := patcher.WhereTypeAnd // default to AND
-                wt, ok := where.(patcher.WhereTyper)
-                if ok && wt.WhereType().IsValid() {
-                	wtStr = wt.WhereType()
-                }
-                builder.WriteString(string(wtStr) + " ")
+    if len(filters) > 0 {
+        for _, filter := range filters {
+            if joiner := filter.(patcher.Joiner); joiner != nil {
+                joinSql, joinArgs := joiner.Join()
+                builder.WriteString(joinSql)
+                args = append(args, joinArgs...)
             }
-            whereStr, whereArgs := where.Where()
-            builder.WriteString(whereStr)
-            args = append(args, whereArgs...)
+        }
+    }
+
+    builder.WriteString("\nFROM {{ $.Table.Name }} t")
+
+    if len(filters) > 0 {
+        builder.WriteString("\nWHERE\n")
+        for i, filter := range filters {
+            if where := filter.(patcher.Wherer); where != nil {
+                if i > 0 {
+            		wtStr := patcher.WhereTypeAnd
+            		if wt, ok := filter.(patcher.WhereTyper); ok {
+            			wtStr = wt.WhereType()
+            		}
+            		builder.WriteString(string(" " + wtStr + " "))
+            	}
+                whereSql, whereArgs := where.Where()
+                builder.WriteString(whereSql)
+                builder.WriteString("\n")
+                args = append(args, whereArgs...)
+            }
         }
     }
 
