@@ -45,9 +45,16 @@ jobs:
         run: go install github.com/magefile/mage@latest
 
       - name: Run Mage
-        run: |
-          mage build
-          mage tools
+        uses: magefile/mage-action@v3
+        with:
+          version: latest
+          args: build
+
+      - name: Run Mage
+        uses: magefile/mage-action@v3
+        with:
+          version: latest
+          args: tools
 
       - name: Create Changelog
         run: |
