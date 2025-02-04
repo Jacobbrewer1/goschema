@@ -186,7 +186,7 @@ func getType(col *entities.Column) string {
 		return "int64"
 	case "int":
 		if col.Nullable {
-			return "usql.NullInt64"
+			return "usql.NullInt"
 		}
 		if col.Unsigned {
 			return "uint"
@@ -216,7 +216,7 @@ func getType(col *entities.Column) string {
 		return "int16"
 	case "mediumint":
 		if col.Nullable {
-			return "usql.NullInt64"
+			return "usql.NullInt32"
 		}
 		if col.Unsigned {
 			return "uint32"

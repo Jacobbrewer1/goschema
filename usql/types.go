@@ -93,6 +93,158 @@ func NewNullFloat64(f float64) *NullFloat64 {
 	return &NullFloat64{NullFloat64: sql.NullFloat64{Float64: f, Valid: true}}
 }
 
+// NullInt represents a nullable int type which supports json Marshaler, sql Scanner, and sql driver Valuer interfaces.
+type NullInt struct {
+	sql.NullInt64
+}
+
+// MarshalJSON implements the json.Marshaler interface for a NullInt.
+func (r NullInt) MarshalJSON() ([]byte, error) {
+	if r.Valid {
+		return json.Marshal(r.Int64)
+	}
+
+	return json.Marshal(nil)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for a NullInt.
+func (r *NullInt) UnmarshalJSON(data []byte) error {
+	if bytes.Equal(data, null) {
+		r.Int64 = 0
+		r.Valid = false
+
+		return nil
+	}
+
+	if err := json.Unmarshal(data, &r.Int64); err != nil {
+		return err
+	}
+	r.Valid = true
+
+	return nil
+}
+
+func (r NullInt) Val() int {
+	return int(r.Int64)
+}
+
+// RedisArg implements redis.Argument.
+//
+// The caller should explicitly check the Valid field when putting NullString
+// values into Redis. If this is not done it can lead to confusion as RedisScan
+// on this type will treat an empty non-nil string as valid.
+func (r NullInt) RedisArg() interface{} {
+	return r.Int64
+}
+
+// RedisScan implements redis.Scanner.
+func (r *NullInt) RedisScan(src interface{}) error {
+	if src == nil {
+		r.Int64, r.Valid = 0, false
+		return nil
+	}
+
+	var err error
+	switch src := src.(type) {
+	case []byte:
+		r.Int64, err = strconv.ParseInt(string(src), 10, 64)
+	case string:
+		r.Int64, err = strconv.ParseInt(src, 10, 64)
+	default:
+		return fmt.Errorf("unexpected type: %T", src)
+	}
+
+	if err != nil {
+		return err
+	}
+	r.Valid = true
+
+	return nil
+}
+
+// NewNullInt returns a valid new NullInt for a given int value.
+func NewNullInt(i int) *NullInt {
+	return &NullInt{NullInt64: sql.NullInt64{Int64: int64(i), Valid: true}}
+}
+
+// NullInt32 represents a nullable int32 type which supports json Marshaler, sql Scanner, and sql driver Valuer interfaces.
+type NullInt32 struct {
+	sql.NullInt32
+}
+
+// MarshalJSON implements the json.Marshaler interface for a NullInt32.
+func (r NullInt32) MarshalJSON() ([]byte, error) {
+	if r.Valid {
+		return json.Marshal(r.Int32)
+	}
+
+	return json.Marshal(nil)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for a NullInt32.
+func (r *NullInt32) UnmarshalJSON(data []byte) error {
+	if bytes.Equal(data, null) {
+		r.Int32 = 0
+		r.Valid = false
+
+		return nil
+	}
+
+	if err := json.Unmarshal(data, &r.Int32); err != nil {
+		return err
+	}
+	r.Valid = true
+
+	return nil
+}
+
+func (r NullInt32) Val() int32 {
+	return r.Int32
+}
+
+// RedisArg implements redis.Argument.
+//
+// The caller should explicitly check the Valid field when putting NullString
+// values into Redis. If this is not done it can lead to confusion as RedisScan
+// on this type will treat an empty non-nil string as valid.
+func (r NullInt32) RedisArg() interface{} {
+	return r.Int32
+}
+
+// RedisScan implements redis.Scanner.
+func (r *NullInt32) RedisScan(src interface{}) error {
+	if src == nil {
+		r.Int32, r.Valid = 0, false
+		return nil
+	}
+
+	var (
+		i64 int64
+		err error
+	)
+	switch src := src.(type) {
+	case []byte:
+		i64, err = strconv.ParseInt(string(src), 10, 32)
+	case string:
+		i64, err = strconv.ParseInt(src, 10, 32)
+	default:
+		return fmt.Errorf("unexpected type: %T", src)
+	}
+
+	if err != nil {
+		return err
+	}
+	r.Int32 = int32(i64)
+	r.Valid = true
+
+	return nil
+}
+
+// NewNullInt32 returns a valid new NullInt32 for a given int32 value.
+func NewNullInt32(i int32) *NullInt32 {
+	return &NullInt32{NullInt32: sql.NullInt32{Int32: i, Valid: true}}
+}
+
 // NullInt64 represents a nullable int64 type which supports json Marshaler, sql Scanner, and sql driver Valuer interfaces.
 type NullInt64 struct {
 	sql.NullInt64
