@@ -115,10 +115,10 @@ func {{ $struct }}By{{ range $i, $col := $key.Columns }}{{ $col.Name | structify
 }
 
 type {{ lcfirst $struct }}PKWherer struct {
-    ids []interface{}
+    ids []any
 }
 
-func (m {{ lcfirst $struct }}PKWherer) Where() (string, []interface{}) {
+func (m {{ lcfirst $struct }}PKWherer) Where() (string, []any) {
     return "{{ range $i, $col := $key.Columns }}{{ if $i }} AND {{ end }}`{{ $col.Name }}` = ?{{ end }}", m.ids
 }
 
@@ -138,7 +138,7 @@ func (m *{{ $struct }}) Patch(db DB, newT *{{ $struct }}) error {
 	    newT,
 	    patcher.WithTable({{ $struct }}TableName),
 	    patcher.WithWhere(&{{ lcfirst $struct }}PKWherer{
-	        ids: []interface{}{ {{ range $i, $col := $key.Columns }}m.{{ $col.Name | structify }},{{ end }} },
+	        ids: []any{ {{ range $i, $col := $key.Columns }}m.{{ $col.Name | structify }},{{ end }} },
 	    }),
 	    patcher.WithIgnoredFields(
 	        {{- range $i, $col := $key.Columns }}

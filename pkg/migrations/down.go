@@ -44,7 +44,7 @@ func (v *versioning) MigrateDown() error {
 	// Migrate down.
 	count := 0
 	for _, f := range orderedFiles {
-		slog.Debug(fmt.Sprintf("Migrating up: %s", f.Name()))
+		slog.Debug("Migrating down", slog.String("file", f.Name()))
 
 		// Get the datetime prefix.
 		prefix, err := getDatetimePrefix(f.Name())

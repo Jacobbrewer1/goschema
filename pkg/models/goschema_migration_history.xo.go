@@ -199,10 +199,10 @@ func GoschemaMigrationHistoryById(db DB, id int) (*GoschemaMigrationHistory, err
 }
 
 type goschemaMigrationHistoryPKWherer struct {
-	ids []interface{}
+	ids []any
 }
 
-func (m goschemaMigrationHistoryPKWherer) Where() (string, []interface{}) {
+func (m goschemaMigrationHistoryPKWherer) Where() (string, []any) {
 	return "`id` = ?", m.ids
 }
 
@@ -222,7 +222,7 @@ func (m *GoschemaMigrationHistory) Patch(db DB, newT *GoschemaMigrationHistory) 
 		newT,
 		patcher.WithTable(GoschemaMigrationHistoryTableName),
 		patcher.WithWhere(&goschemaMigrationHistoryPKWherer{
-			ids: []interface{}{m.Id},
+			ids: []any{m.Id},
 		}),
 	)
 	if err != nil {

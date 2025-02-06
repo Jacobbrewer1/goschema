@@ -582,11 +582,11 @@ func TestTypes(t *testing.T) {
 	suite.Run(t, &TypesSuite{})
 }
 
-func decodeJSON(j string, i interface{}) error {
+func decodeJSON(j string, i any) error {
 	return json.NewDecoder(strings.NewReader(j)).Decode(i)
 }
 
-func encodeJSON(i interface{}) (string, error) {
+func encodeJSON(i any) (string, error) {
 	buf := &bytes.Buffer{}
 	err := json.NewEncoder(buf).Encode(i)
 	return strings.TrimSpace(buf.String()), err
@@ -601,7 +601,7 @@ func TestInt64RedisScan(t *testing.T) {
 
 	cases := []struct {
 		name     string
-		data     interface{}
+		data     any
 		err      bool
 		expected NullInt64
 	}{

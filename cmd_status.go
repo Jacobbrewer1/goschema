@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/google/subcommands"
+	"github.com/jacobbrewer1/goschema/pkg/logging"
 	"github.com/jacobbrewer1/goschema/pkg/migrations"
 	"github.com/pterm/pterm"
 )
@@ -30,21 +31,21 @@ func (c *statusCmd) Usage() string {
 
 func (c *statusCmd) SetFlags(f *flag.FlagSet) {}
 
-func (c *statusCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
+func (c *statusCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...any) subcommands.ExitStatus {
 	if e := os.Getenv(migrations.DbEnvVar); e == "" {
-		slog.Error(fmt.Sprintf("Environment variable %s is not set", migrations.DbEnvVar))
+		slog.Error("Database environment variable not set", slog.String("variable", migrations.DbEnvVar))
 		return subcommands.ExitFailure
 	}
 
 	db, err := migrations.ConnectDB()
 	if err != nil {
-		slog.Error("Error connecting to the database", slog.String("error", err.Error()))
+		slog.Error("Error connecting to the database", slog.String(logging.KeyError, err.Error()))
 		return subcommands.ExitFailure
 	}
 
 	versions, err := migrations.NewVersioning(db, "", 0).GetStatus()
 	if err != nil {
-		slog.Error("Error getting the status", slog.String("error", err.Error()))
+		slog.Error("Error getting the status", slog.String(logging.KeyError, err.Error()))
 		return subcommands.ExitFailure
 	}
 
@@ -57,7 +58,7 @@ func (c *statusCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...interface{}
 	var tableData pterm.TableData = tableDataStr
 
 	if err := pterm.DefaultTable.WithHasHeader().WithBoxed().WithData(tableData).Render(); err != nil {
-		slog.Error("Error rendering table", slog.String("error", err.Error()))
+		slog.Error("Error rendering table", slog.String(logging.KeyError, err.Error()))
 		return subcommands.ExitFailure
 	}
 

@@ -133,12 +133,12 @@ func (r NullInt) Val() int {
 // The caller should explicitly check the Valid field when putting NullString
 // values into Redis. If this is not done it can lead to confusion as RedisScan
 // on this type will treat an empty non-nil string as valid.
-func (r NullInt) RedisArg() interface{} {
+func (r NullInt) RedisArg() any {
 	return r.Int64
 }
 
 // RedisScan implements redis.Scanner.
-func (r *NullInt) RedisScan(src interface{}) error {
+func (r *NullInt) RedisScan(src any) error {
 	if src == nil {
 		r.Int64, r.Valid = 0, false
 		return nil
@@ -207,12 +207,12 @@ func (r NullInt32) Val() int32 {
 // The caller should explicitly check the Valid field when putting NullString
 // values into Redis. If this is not done it can lead to confusion as RedisScan
 // on this type will treat an empty non-nil string as valid.
-func (r NullInt32) RedisArg() interface{} {
+func (r NullInt32) RedisArg() any {
 	return r.Int32
 }
 
 // RedisScan implements redis.Scanner.
-func (r *NullInt32) RedisScan(src interface{}) error {
+func (r *NullInt32) RedisScan(src any) error {
 	if src == nil {
 		r.Int32, r.Valid = 0, false
 		return nil
@@ -285,12 +285,12 @@ func (r NullInt64) Val() int64 {
 // The caller should explicitly check the Valid field when putting NullString
 // values into Redis. If this is not done it can lead to confusion as RedisScan
 // on this type will treat an empty non-nil string as valid.
-func (r NullInt64) RedisArg() interface{} {
+func (r NullInt64) RedisArg() any {
 	return r.Int64
 }
 
 // RedisScan implements redis.Scanner.
-func (r *NullInt64) RedisScan(src interface{}) error {
+func (r *NullInt64) RedisScan(src any) error {
 	if src == nil {
 		r.Int64, r.Valid = 0, false
 		return nil
@@ -358,12 +358,12 @@ func (r NullString) Val() string {
 // The caller should explicitly check the Valid field when putting NullString
 // values into Redis. If this is not done it can lead to confusion as RedisScan
 // on this type will treat an empty non-nil string as valid.
-func (r NullString) RedisArg() interface{} {
+func (r NullString) RedisArg() any {
 	return r.String
 }
 
 // RedisScan implements redis.Scanner.
-func (r *NullString) RedisScan(src interface{}) error {
+func (r *NullString) RedisScan(src any) error {
 	if src == nil {
 		r.String, r.Valid = "", false
 		return nil
@@ -416,7 +416,7 @@ func parseTime(str string, loc *time.Location) (time.Time, error) {
 }
 
 // Scan implements the Scanner interface
-func (d *Duration) Scan(value interface{}) (err error) {
+func (d *Duration) Scan(value any) (err error) {
 	var t time.Time
 	switch v := value.(type) {
 	case time.Time:
@@ -541,7 +541,7 @@ func (r *NullTime) UnmarshalJSON(data []byte) error {
 // RedisArg implements redis.Argument.
 //
 // The time will be serialized as a UTC unix timestamp.
-func (r NullTime) RedisArg() interface{} {
+func (r NullTime) RedisArg() any {
 	if r.Valid {
 		return r.Time.UTC().Unix()
 	}
@@ -551,7 +551,7 @@ func (r NullTime) RedisArg() interface{} {
 // RedisScan implements redis.Scanner.
 //
 // The src value is expected to be a UTC timestamp formatted as a unix timestamp.
-func (r *NullTime) RedisScan(src interface{}) error {
+func (r *NullTime) RedisScan(src any) error {
 	if src == nil {
 		return nil
 	}

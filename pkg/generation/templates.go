@@ -14,6 +14,7 @@ import (
 	"github.com/Masterminds/sprig"
 	"github.com/huandu/xstrings"
 	"github.com/jacobbrewer1/goschema/pkg/entities"
+	"github.com/jacobbrewer1/goschema/pkg/logging"
 )
 
 type templateInfo struct {
@@ -21,7 +22,7 @@ type templateInfo struct {
 	Table     *entities.Table
 }
 
-func RenderTemplates(tables []*entities.Table, templatesLoc, outputLoc string, fileExtensionPrefix string) error {
+func RenderTemplates(tables []*entities.Table, templatesLoc, outputLoc, fileExtensionPrefix string) error {
 	tmpl, err := template.New("model.tmpl").Funcs(sprig.TxtFuncMap()).Funcs(Helpers).ParseGlob(templatesLoc)
 	if err != nil {
 		return fmt.Errorf("error parsing templates: %w", err)
@@ -40,7 +41,7 @@ func RenderTemplates(tables []*entities.Table, templatesLoc, outputLoc string, f
 }
 
 // RenderWithTemplates renders templates that are provided as embedded files
-func RenderWithTemplates(fs embed.FS, tables []*entities.Table, outputLoc string, fileExtensionPrefix string) error {
+func RenderWithTemplates(fs embed.FS, tables []*entities.Table, outputLoc, fileExtensionPrefix string) error {
 	tmpl, err := template.New("model.tmpl").Funcs(sprig.TxtFuncMap()).Funcs(Helpers).ParseFS(fs, "templates/*.tmpl")
 	if err != nil {
 		return fmt.Errorf("error parsing templates: %w", err)
@@ -62,7 +63,7 @@ func RenderWithTemplates(fs embed.FS, tables []*entities.Table, outputLoc string
 	return nil
 }
 
-func renderHelpers(fs embed.FS, outputLoc string, fileExtensionPrefix string) error {
+func renderHelpers(fs embed.FS, outputLoc, fileExtensionPrefix string) error {
 	wg := new(sync.WaitGroup)
 	errs := new(sync.Map)
 
@@ -132,9 +133,9 @@ func renderHelpers(fs embed.FS, outputLoc string, fileExtensionPrefix string) er
 
 	wg.Wait()
 
-	errs.Range(func(key, value interface{}) bool {
+	errs.Range(func(key, value any) bool {
 		if value != nil {
-			slog.Error(key.(string), slog.String("error", value.(error).Error()))
+			slog.Error("Error rendering helpers", slog.String(logging.KeyError, value.(error).Error()))
 		}
 
 		return true
@@ -143,7 +144,7 @@ func renderHelpers(fs embed.FS, outputLoc string, fileExtensionPrefix string) er
 	return nil
 }
 
-func generate(t *templateInfo, tmpl *template.Template, outputLoc string, fileExtensionPrefix string) error {
+func generate(t *templateInfo, tmpl *template.Template, outputLoc, fileExtensionPrefix string) error {
 	ext := ".go"
 	if fileExtensionPrefix != "" {
 		// Add a period if it's not already there
@@ -159,7 +160,7 @@ func generate(t *templateInfo, tmpl *template.Template, outputLoc string, fileEx
 	}
 
 	fn := filepath.Join(outputLoc, filename+ext)
-	if err := os.MkdirAll(filepath.Dir(fn), 0750); err != nil {
+	if err := os.MkdirAll(filepath.Dir(fn), 0o750); err != nil {
 		return err
 	}
 
@@ -170,7 +171,7 @@ func generate(t *templateInfo, tmpl *template.Template, outputLoc string, fileEx
 	defer func(f *os.File) {
 		err := f.Close()
 		if err != nil {
-			slog.Warn("Error closing file", slog.String("error", err.Error()))
+			slog.Warn("Error closing file", slog.String(logging.KeyError, err.Error()))
 		}
 	}(f)
 

@@ -36,5 +36,5 @@ func main() {
 		cancel()
 	}()
 
-	os.Exit(int(subcommands.Execute(ctx)))
+	os.Exit(int(subcommands.Execute(ctx))) // nolint: gocritic
 }

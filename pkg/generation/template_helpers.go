@@ -178,7 +178,7 @@ func getType(col *entities.Column) string {
 	switch strings.ToLower(col.Type) {
 	case "bigint":
 		if col.Nullable {
-			return "usql.NullInt64"
+			return NullInt64
 		}
 		if col.Unsigned {
 			return "uint64"

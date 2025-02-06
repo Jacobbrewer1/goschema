@@ -204,13 +204,13 @@ func (v *versioning) setCurrentVersion(version string) error {
 	return nil
 }
 
-func (v *versioning) mustCreateHistory(version string, action string) {
+func (v *versioning) mustCreateHistory(version, action string) {
 	if err := v.createHistory(version, action); err != nil {
 		panic(err)
 	}
 }
 
-func (v *versioning) createHistory(version string, action string) error {
+func (v *versioning) createHistory(version, action string) error {
 	newHistory := &models.GoschemaMigrationHistory{
 		Version:   version,
 		Action:    usql.Enum(action),

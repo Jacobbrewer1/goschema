@@ -3,12 +3,12 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"log/slog"
 	"os"
 	"path/filepath"
 
 	"github.com/google/subcommands"
+	"github.com/jacobbrewer1/goschema/pkg/logging"
 	"github.com/jacobbrewer1/goschema/pkg/migrations"
 )
 
@@ -47,7 +47,7 @@ func (m *migrateCmd) SetFlags(f *flag.FlagSet) {
 	f.IntVar(&m.steps, "steps", 0, "The number of steps to migrate (0 means all).")
 }
 
-func (m *migrateCmd) Execute(ctx context.Context, _ *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
+func (m *migrateCmd) Execute(ctx context.Context, _ *flag.FlagSet, _ ...any) subcommands.ExitStatus {
 	if m.up && m.down {
 		slog.Error("Cannot migrate up and down at the same time")
 		return subcommands.ExitUsageError
@@ -57,31 +57,31 @@ func (m *migrateCmd) Execute(ctx context.Context, _ *flag.FlagSet, _ ...interfac
 	}
 
 	if e := os.Getenv(migrations.DbEnvVar); e == "" {
-		slog.Error(fmt.Sprintf("Environment variable %s is not set", migrations.DbEnvVar))
+		slog.Error("Database environment variable not set", slog.String("variable", migrations.DbEnvVar))
 		return subcommands.ExitFailure
 	}
 
 	absPath, err := filepath.Abs(m.migrationLocation)
 	if err != nil {
-		slog.Error("Error getting absolute path", slog.String("error", err.Error()))
+		slog.Error("Error getting absolute path", slog.String(logging.KeyError, err.Error()))
 		return subcommands.ExitFailure
 	}
 
 	db, err := migrations.ConnectDB()
 	if err != nil {
-		slog.Error("Error connecting to the database", slog.String("error", err.Error()))
+		slog.Error("Error connecting to the database", slog.String(logging.KeyError, err.Error()))
 		return subcommands.ExitFailure
 	}
 
 	switch {
 	case m.up:
 		if err := migrations.NewVersioning(db, absPath, m.steps).MigrateUp(); err != nil {
-			slog.Error("Error migrating up", slog.String("error", err.Error()))
+			slog.Error("Error migrating up", slog.String(logging.KeyError, err.Error()))
 			return subcommands.ExitFailure
 		}
 	case m.down:
 		if err := migrations.NewVersioning(db, absPath, m.steps).MigrateDown(); err != nil {
-			slog.Error("Error migrating down", slog.String("error", err.Error()))
+			slog.Error("Error migrating down", slog.String(logging.KeyError, err.Error()))
 			return subcommands.ExitFailure
 		}
 	}

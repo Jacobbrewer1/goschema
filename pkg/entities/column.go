@@ -156,18 +156,25 @@ func (c *Column) setDefaultValue(col *ast.ColumnDef, v ast.ValueExpr) (err error
 		case mysql.TypeNewDecimal:
 			d := v.GetString()
 			precision := col.Tp.GetFlen()
-			c.Default, _, err = big.ParseFloat(d, 10, uint(precision), big.ToNearestEven)
+
+			var prec uint
+			if precision >= 0 {
+				prec = uint(precision)
+			}
+
+			c.Default, _, err = big.ParseFloat(d, 10, prec, big.ToNearestEven)
 		}
 		return err
 	case types.ETInt:
 		bi := big.NewInt(0)
 		bi, ok := bi.SetString(v.GetString(), 10)
 		if ok {
-			if bi.IsInt64() {
+			switch {
+			case bi.IsInt64():
 				c.Default = bi.Int64()
-			} else if bi.IsUint64() {
+			case bi.IsUint64():
 				c.Default = bi.Uint64()
-			} else {
+			default:
 				c.Default = bi
 			}
 			return nil

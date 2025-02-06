@@ -33,7 +33,7 @@ func (v versionCmd) Usage() string {
 
 func (v versionCmd) SetFlags(f *flag.FlagSet) {}
 
-func (v versionCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
+func (v versionCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...any) subcommands.ExitStatus {
 	fmt.Printf(
 		"Commit: %s\nRuntime: %s %s/%s\nDate: %s\n",
 		Commit,
