@@ -4,6 +4,7 @@ import (
 	"log"
 	"log/slog"
 
+	"github.com/jacobbrewer1/goschema/pkg/logging"
 	"github.com/pingcap/tidb/pkg/parser/ast"
 )
 
@@ -93,7 +94,7 @@ func (t *Table) addKey(con *ast.Constraint) {
 	case ast.ConstraintFulltext:
 		k.Type = "fulltext"
 	default:
-		slog.Warn("unknown key type", slog.Int("type", int(con.Tp)))
+		slog.Warn("unknown key type", slog.Int(logging.KeyType, int(con.Tp)))
 	}
 	if con.Option != nil {
 		k.Comment = con.Option.Comment

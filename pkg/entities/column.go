@@ -5,6 +5,7 @@ import (
 	"math/big"
 	"time"
 
+	"github.com/jacobbrewer1/goschema/pkg/logging"
 	"github.com/pingcap/tidb/pkg/parser/ast"
 	"github.com/pingcap/tidb/pkg/parser/mysql"
 	"github.com/pingcap/tidb/pkg/parser/types"
@@ -96,7 +97,7 @@ func (c *Column) setOptions(col *ast.ColumnDef) error {
 			c.InUniqueKey = true
 		default:
 			// Ignore other options
-			slog.Warn("Unhandled column option", slog.Int("type", int(opt.Tp)))
+			slog.Warn("Unhandled column option", slog.Int(logging.KeyType, int(opt.Tp)))
 		}
 	}
 	return nil

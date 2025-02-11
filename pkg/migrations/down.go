@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log/slog"
 	"time"
+
+	"github.com/jacobbrewer1/goschema/pkg/logging"
 )
 
 func (v *versioning) MigrateDown() error {
@@ -44,7 +46,7 @@ func (v *versioning) MigrateDown() error {
 	// Migrate down.
 	count := 0
 	for _, f := range orderedFiles {
-		slog.Debug("Migrating down", slog.String("file", f.Name()))
+		slog.Debug("Migrating down", slog.String(logging.KeyFile, f.Name()))
 
 		// Get the datetime prefix.
 		prefix, err := getDatetimePrefix(f.Name())
