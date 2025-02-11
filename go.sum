@@ -94,8 +94,8 @@ github.com/huandu/xstrings v1.5.0 h1:2ag3IFq9ZDANvthTwTiqSSZLjDc+BedvHPAp5tJy2TI
 github.com/huandu/xstrings v1.5.0/go.mod h1:y5/lhBue+AyNmUVz9RLU9xbLR0o4KIIExikq4ovT0aE=
 github.com/imdario/mergo v0.3.11 h1:3tnifQM4i+fbajXKBHXWEH+KvNHqojZ778UH75j3bGA=
 github.com/imdario/mergo v0.3.11/go.mod h1:jmQim1M+e3UYxmgPu/WyfjB3N3VflVyUjjjwH0dnCYA=
-github.com/jacobbrewer1/patcher v0.1.17 h1:qxnRb5hIQWixcu6wE8Du9s9XHsJrX2GhwP3tG+mC1XE=
-github.com/jacobbrewer1/patcher v0.1.17/go.mod h1:rurnK9D/WNAbHGO86m9naLmY5EXxrerZl6NeReFouZo=
+github.com/jacobbrewer1/patcher v0.1.19 h1:OBIwnkHXzIEc5QArOJneKx1uEdsQ9qEXVZ1ou0fQc5M=
+github.com/jacobbrewer1/patcher v0.1.19/go.mod h1:msM0fn0VFnEtSSFkBD1B2Id/fuyt+EuOA9OSRglkOrw=
 github.com/jacobbrewer1/vaulty v0.1.7 h1:Y1UVwFu/zwQK3octiLh95DefSfxZ0ano25UowpYfbfc=
 github.com/jacobbrewer1/vaulty v0.1.7/go.mod h1:8yPrEqRwBSjVK+CUo7vQ81cDJwIzrouoaqHYy9kX0cg=
 github.com/jmoiron/sqlx v1.4.0 h1:1PLqN7S1UYp5t4SrVVnt4nUVNemrDAtxlulVe+Qgm3o=
