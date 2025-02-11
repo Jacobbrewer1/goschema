@@ -10,7 +10,7 @@ require (
 	github.com/google/subcommands v1.2.0
 	github.com/hashicorp/vault/api v1.15.0
 	github.com/huandu/xstrings v1.5.0
-	github.com/jacobbrewer1/patcher v0.1.17
+	github.com/jacobbrewer1/patcher v0.1.19
 	github.com/jacobbrewer1/vaulty v0.1.7
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/magefile/mage v1.15.0
