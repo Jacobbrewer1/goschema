@@ -12,6 +12,7 @@ linters:
     - iface
     - thelper
     - tparallel
+    - intrange
 issues:
   exclude-rules:
     - path: (.+)_test.go
@@ -131,7 +132,7 @@ linters-settings:
     # https://pkg.go.dev/cmd/gofmt
     # Default: []
     rewrite-rules:
-      - pattern: 'any'
+      - pattern: 'interface{}'
         replacement: 'any'
       - pattern: 'a[b:len(a)]'
         replacement: 'a[b:]'
