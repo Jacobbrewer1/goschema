@@ -168,10 +168,10 @@ func GoschemaMigrationVersionByVersion(db DB, version string) (*GoschemaMigratio
 }
 
 type goschemaMigrationVersionPKWherer struct {
-	ids []interface{}
+	ids []any
 }
 
-func (m goschemaMigrationVersionPKWherer) Where() (string, []interface{}) {
+func (m goschemaMigrationVersionPKWherer) Where() (string, []any) {
 	return "`version` = ?", m.ids
 }
 
@@ -191,7 +191,7 @@ func (m *GoschemaMigrationVersion) Patch(db DB, newT *GoschemaMigrationVersion) 
 		newT,
 		patcher.WithTable(GoschemaMigrationVersionTableName),
 		patcher.WithWhere(&goschemaMigrationVersionPKWherer{
-			ids: []interface{}{m.Version},
+			ids: []any{m.Version},
 		}),
 	)
 	if err != nil {

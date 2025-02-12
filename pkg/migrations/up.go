@@ -10,6 +10,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/jacobbrewer1/goschema/pkg/logging"
 )
 
 var (
@@ -54,7 +56,7 @@ func (v *versioning) MigrateUp() error {
 	// Migrate up.
 	count := 0
 	for _, f := range orderedFiles {
-		slog.Debug(fmt.Sprintf("Migrating up: %s", f.Name()))
+		slog.Debug("Migrating up", slog.String(logging.KeyFile, f.Name()))
 
 		// Get the datetime prefix.
 		prefix, err := getDatetimePrefix(f.Name())
@@ -119,7 +121,7 @@ func (v *versioning) migrate(f os.DirEntry, direction string) error {
 	}
 	defer func() {
 		if err := file.Close(); err != nil {
-			slog.Error("error closing file", slog.String("error", err.Error()))
+			slog.Error("error closing file", slog.String(logging.KeyError, err.Error()))
 		}
 	}()
 
@@ -136,7 +138,7 @@ func (v *versioning) migrate(f os.DirEntry, direction string) error {
 	}
 	defer func() {
 		if err := tx.Rollback(); err != nil && !errors.Is(err, sql.ErrTxDone) {
-			slog.Error("error rolling back transaction", slog.String("error", err.Error()))
+			slog.Error("error rolling back transaction", slog.String(logging.KeyError, err.Error()))
 		}
 	}()
 
@@ -158,11 +160,12 @@ func (v *versioning) migrate(f os.DirEntry, direction string) error {
 	case down:
 		// Set the current version to the previous version.
 		prev, err := v.getPreviousVersion()
-		if err != nil {
+		switch {
+		case err != nil:
 			return fmt.Errorf("error getting previous version: %w", err)
-		} else if prev == "" {
+		case prev == "":
 			v.mustSetNoCurrentVersion()
-		} else {
+		default:
 			v.mustSetCurrentVersion(prev)
 		}
 
@@ -207,11 +210,13 @@ func orderFiles(files []os.DirEntry) ([]os.DirEntry, error) {
 
 			if parsed.Before(oparsed) {
 				ordered = append(ordered[:i], append([]os.DirEntry{f}, ordered[i:]...)...)
-				break
-			} else if i == len(ordered)-1 {
-				ordered = append(ordered, f)
-				break
+				return ordered, nil
 			}
+			if i != len(ordered)-1 {
+				continue
+			}
+			ordered = append(ordered, f)
+			return ordered, nil
 		}
 	}
 
@@ -246,7 +251,10 @@ func getFiles(location string) ([]os.DirEntry, error) {
 func isDirectory(location string) bool {
 	s, err := os.Stat(location)
 	if err != nil {
-		slog.Error(fmt.Sprintf("error stating location: %s", location), slog.String("error", err.Error()))
+		slog.Error("error getting location stat",
+			slog.String(logging.KeyError, err.Error()),
+			slog.String(logging.KeyLocation, location),
+		)
 		return false
 	}
 

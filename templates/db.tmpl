@@ -23,8 +23,8 @@ type DB interface {
 	Exec(string, ...any) (sql.Result, error)
 	Query(string, ...any) (*sql.Rows, error)
 	QueryRow(string, ...any) *sql.Row
-	Get(dest any, query string, args ...interface{}) error
-	Select(dest any, query string, args ...interface{}) error
+	Get(dest any, query string, args ...any) error
+	Select(dest any, query string, args ...any) error
 }
 
 // Transactioner is the interface that a database connection that can start

@@ -5,6 +5,7 @@ import (
 	"math/big"
 	"time"
 
+	"github.com/jacobbrewer1/goschema/pkg/logging"
 	"github.com/pingcap/tidb/pkg/parser/ast"
 	"github.com/pingcap/tidb/pkg/parser/mysql"
 	"github.com/pingcap/tidb/pkg/parser/types"
@@ -52,7 +53,7 @@ func (c *Column) setTypeInfo(tp *types.FieldType) {
 	}
 	c.TypeSize = tp.GetFlen()
 	c.TypePrecision = tp.GetDecimal()
-	if tp.GetType() == mysql.TypeEnum {
+	if tp.GetType() == mysql.TypeEnum { // nolint:revive // Allow for extendability on the method signature
 		c.Type = TypeEnum
 		c.Elements = tp.GetElems()
 	}
@@ -73,10 +74,11 @@ func (c *Column) setOptions(col *ast.ColumnDef) error {
 			c.HasDefault = true
 			switch v := opt.Expr.(type) {
 			case ast.ValueExpr:
-				if v != nil && v.GetValue() != nil {
-					if err := c.setDefaultValue(col, v); err != nil {
-						return err
-					}
+				if v == nil || v.GetValue() == nil {
+					return nil
+				}
+				if err := c.setDefaultValue(col, v); err != nil {
+					return err
 				}
 			default:
 				// We can't convert this type yet, so just expose the expression
@@ -96,7 +98,7 @@ func (c *Column) setOptions(col *ast.ColumnDef) error {
 			c.InUniqueKey = true
 		default:
 			// Ignore other options
-			slog.Warn("Unhandled column option", slog.Int("type", int(opt.Tp)))
+			slog.Warn("Unhandled column option", slog.Int(logging.KeyType, int(opt.Tp)))
 		}
 	}
 	return nil
@@ -156,18 +158,25 @@ func (c *Column) setDefaultValue(col *ast.ColumnDef, v ast.ValueExpr) (err error
 		case mysql.TypeNewDecimal:
 			d := v.GetString()
 			precision := col.Tp.GetFlen()
-			c.Default, _, err = big.ParseFloat(d, 10, uint(precision), big.ToNearestEven)
+
+			var prec uint
+			if precision >= 0 {
+				prec = uint(precision)
+			}
+
+			c.Default, _, err = big.ParseFloat(d, 10, prec, big.ToNearestEven)
 		}
 		return err
 	case types.ETInt:
 		bi := big.NewInt(0)
 		bi, ok := bi.SetString(v.GetString(), 10)
 		if ok {
-			if bi.IsInt64() {
+			switch {
+			case bi.IsInt64():
 				c.Default = bi.Int64()
-			} else if bi.IsUint64() {
+			case bi.IsUint64():
 				c.Default = bi.Uint64()
-			} else {
+			default:
 				c.Default = bi
 			}
 			return nil

@@ -157,10 +157,11 @@ func uniqueColumnKeys(t *entities.Table) []entities.Key {
 	}
 	for _, key := range t.Keys {
 		k := fmt.Sprint(key.Columns)
-		if _, ok := m[k]; !ok {
-			m[k] = struct{}{}
-			keys = append(keys, key)
+		if _, ok := m[k]; ok {
+			continue
 		}
+		m[k] = struct{}{}
+		keys = append(keys, key)
 	}
 
 	return keys
@@ -178,7 +179,7 @@ func getType(col *entities.Column) string {
 	switch strings.ToLower(col.Type) {
 	case "bigint":
 		if col.Nullable {
-			return "usql.NullInt64"
+			return NullInt64
 		}
 		if col.Unsigned {
 			return "uint64"

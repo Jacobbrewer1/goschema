@@ -17,7 +17,7 @@ func NewDateTime(t time.Time) *DateTime {
 // MarshalJSON implements the json.Marshaler interface.
 func (d *DateTime) MarshalJSON() ([]byte, error) {
 	// Marshal the time.
-	return []byte(fmt.Sprintf(`"%s"`, d.String())), nil
+	return []byte(fmt.Sprintf("%q", d.String())), nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface.

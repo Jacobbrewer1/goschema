@@ -4,6 +4,7 @@ import (
 	"log"
 	"log/slog"
 
+	"github.com/jacobbrewer1/goschema/pkg/logging"
 	"github.com/pingcap/tidb/pkg/parser/ast"
 )
 
@@ -64,11 +65,12 @@ func (t *Table) setPrimaryKey(con *ast.Constraint) {
 	// Enforce all PK columns to be NOT NULL
 	for _, col := range t.Columns {
 		for _, pk := range t.PrimaryKey.Columns {
-			if col.Name == pk.Name {
-				col.InPrimaryKey = true
-				col.InUniqueKey = true
-				col.Nullable = false
+			if col.Name != pk.Name {
+				continue
 			}
+			col.InPrimaryKey = true
+			col.InUniqueKey = true
+			col.Nullable = false
 		}
 	}
 }
@@ -93,7 +95,7 @@ func (t *Table) addKey(con *ast.Constraint) {
 	case ast.ConstraintFulltext:
 		k.Type = "fulltext"
 	default:
-		slog.Warn("unknown key type", slog.Int("type", int(con.Tp)))
+		slog.Warn("unknown key type", slog.Int(logging.KeyType, int(con.Tp)))
 	}
 	if con.Option != nil {
 		k.Comment = con.Option.Comment
