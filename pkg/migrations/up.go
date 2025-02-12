@@ -56,7 +56,7 @@ func (v *versioning) MigrateUp() error {
 	// Migrate up.
 	count := 0
 	for _, f := range orderedFiles {
-		slog.Debug("Migrating up", slog.String("file", f.Name()))
+		slog.Debug("Migrating up", slog.String(logging.KeyFile, f.Name()))
 
 		// Get the datetime prefix.
 		prefix, err := getDatetimePrefix(f.Name())
@@ -210,11 +210,13 @@ func orderFiles(files []os.DirEntry) ([]os.DirEntry, error) {
 
 			if parsed.Before(oparsed) {
 				ordered = append(ordered[:i], append([]os.DirEntry{f}, ordered[i:]...)...)
-				break
-			} else if i == len(ordered)-1 {
-				ordered = append(ordered, f)
-				break
+				return ordered, nil
 			}
+			if i != len(ordered)-1 {
+				continue
+			}
+			ordered = append(ordered, f)
+			return ordered, nil
 		}
 	}
 
@@ -249,7 +251,10 @@ func getFiles(location string) ([]os.DirEntry, error) {
 func isDirectory(location string) bool {
 	s, err := os.Stat(location)
 	if err != nil {
-		slog.Error("error stating location", slog.String(logging.KeyError, err.Error()), slog.String("location", location))
+		slog.Error("error getting location stat",
+			slog.String(logging.KeyError, err.Error()),
+			slog.String(logging.KeyLocation, location),
+		)
 		return false
 	}
 

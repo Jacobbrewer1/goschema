@@ -57,31 +57,36 @@ func (m *migrateCmd) Execute(ctx context.Context, _ *flag.FlagSet, _ ...any) sub
 	}
 
 	if e := os.Getenv(migrations.DbEnvVar); e == "" {
-		slog.Error("Database environment variable not set", slog.String("variable", migrations.DbEnvVar))
+		slog.Error("Database environment variable not set",
+			slog.String(logging.KeyVariable, migrations.DbEnvVar))
 		return subcommands.ExitFailure
 	}
 
 	absPath, err := filepath.Abs(m.migrationLocation)
 	if err != nil {
-		slog.Error("Error getting absolute path", slog.String(logging.KeyError, err.Error()))
+		slog.Error("Error getting absolute path",
+			slog.String(logging.KeyError, err.Error()))
 		return subcommands.ExitFailure
 	}
 
 	db, err := migrations.ConnectDB()
 	if err != nil {
-		slog.Error("Error connecting to the database", slog.String(logging.KeyError, err.Error()))
+		slog.Error("Error connecting to the database",
+			slog.String(logging.KeyError, err.Error()))
 		return subcommands.ExitFailure
 	}
 
 	switch {
 	case m.up:
-		if err := migrations.NewVersioning(db, absPath, m.steps).MigrateUp(); err != nil {
-			slog.Error("Error migrating up", slog.String(logging.KeyError, err.Error()))
+		if err := migrations.NewVersioning(db, absPath, m.steps).MigrateUp(); err != nil { // nolint:revive // Traditional error handling.
+			slog.Error("Error migrating up",
+				slog.String(logging.KeyError, err.Error()))
 			return subcommands.ExitFailure
 		}
 	case m.down:
-		if err := migrations.NewVersioning(db, absPath, m.steps).MigrateDown(); err != nil {
-			slog.Error("Error migrating down", slog.String(logging.KeyError, err.Error()))
+		if err := migrations.NewVersioning(db, absPath, m.steps).MigrateDown(); err != nil { // nolint:revive // Traditional error handling.
+			slog.Error("Error migrating down",
+				slog.String(logging.KeyError, err.Error()))
 			return subcommands.ExitFailure
 		}
 	}

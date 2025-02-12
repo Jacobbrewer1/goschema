@@ -65,11 +65,12 @@ func (t *Table) setPrimaryKey(con *ast.Constraint) {
 	// Enforce all PK columns to be NOT NULL
 	for _, col := range t.Columns {
 		for _, pk := range t.PrimaryKey.Columns {
-			if col.Name == pk.Name {
-				col.InPrimaryKey = true
-				col.InUniqueKey = true
-				col.Nullable = false
+			if col.Name != pk.Name {
+				continue
 			}
+			col.InPrimaryKey = true
+			col.InUniqueKey = true
+			col.Nullable = false
 		}
 	}
 }

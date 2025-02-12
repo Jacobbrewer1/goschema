@@ -87,29 +87,43 @@ func (c *createCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...any) subcom
 
 	upAbs, err := filepath.Abs(upPath)
 	if err != nil {
-		slog.Error("Error getting absolute path", slog.String("path", upPath), slog.String(logging.KeyError, err.Error()))
+		slog.Error("Error getting absolute path",
+			slog.String(logging.KeyPath, upPath),
+			slog.String(logging.KeyError, err.Error()),
+		)
 		return subcommands.ExitFailure
 	}
 
 	downAbs, err := filepath.Abs(downPath)
 	if err != nil {
-		slog.Error("Error getting absolute path", slog.String("path", downPath), slog.String(logging.KeyError, err.Error()))
+		slog.Error("Error getting absolute path",
+			slog.String(logging.KeyPath, downPath),
+			slog.String(logging.KeyError, err.Error()),
+		)
 		return subcommands.ExitFailure
 	}
 
 	if err := createFile(upAbs); err != nil {
-		slog.Error("Error creating file", slog.String("path", upAbs), slog.String(logging.KeyError, err.Error()))
+		slog.Error("Error creating file",
+			slog.String(logging.KeyPath, upAbs),
+			slog.String(logging.KeyError, err.Error()),
+		)
 		return subcommands.ExitFailure
 	}
 
-	slog.Info("Up migration created", slog.String("path", upAbs))
+	slog.Info("Up migration created",
+		slog.String(logging.KeyPath, upAbs))
 
 	if err := createFile(downAbs); err != nil {
-		slog.Error("Error creating file", slog.String("path", downAbs), slog.String(logging.KeyError, err.Error()))
+		slog.Error("Error creating file",
+			slog.String(logging.KeyPath, downAbs),
+			slog.String(logging.KeyError, err.Error()),
+		)
 		return subcommands.ExitFailure
 	}
 
-	slog.Info("Down migration created", slog.String("path", downAbs))
+	slog.Info("Down migration created",
+		slog.String(logging.KeyPath, downAbs))
 
 	return subcommands.ExitSuccess
 }

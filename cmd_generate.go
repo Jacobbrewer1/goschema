@@ -58,47 +58,69 @@ func (g *generateCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...any) subc
 	var err error
 	g.outputLocation, err = filepath.Abs(g.outputLocation)
 	if err != nil {
-		slog.Error("Error getting absolute path", slog.String("outputLocation", g.outputLocation), slog.String(logging.KeyError, err.Error()))
+		slog.Error("Error getting absolute path",
+			slog.String(logging.KeyOutputLoc, g.outputLocation),
+			slog.String(logging.KeyError, err.Error()),
+		)
 		return subcommands.ExitFailure
 	}
 
 	// Load the SQL file locations as abs.
 	g.sqlLocation, err = filepath.Abs(g.sqlLocation)
 	if err != nil {
-		slog.Error("Error getting absolute path", slog.String("sqlLocation", g.sqlLocation), slog.String(logging.KeyError, err.Error()))
+		slog.Error("Error getting absolute path",
+			slog.String(logging.KeySqlLoc, g.sqlLocation),
+			slog.String(logging.KeyError, err.Error()),
+		)
 		return subcommands.ExitFailure
 	}
 
 	if err := generation.GoimportsInstallIfNeeded(); err != nil {
-		slog.Error("Error installing goimports", slog.String(logging.KeyError, err.Error()))
+		slog.Error("Error installing goimports",
+			slog.String(logging.KeyError, err.Error()),
+		)
 		return subcommands.ExitFailure
 	}
 
 	tables, err := generation.LoadSQL(g.sqlLocation)
 	if err != nil {
-		slog.Error("Error loading SQL", slog.String("templatesLocation", g.templatesLocation), slog.String("outputLocation", g.outputLocation), slog.String(logging.KeyError, err.Error()))
+		slog.Error("Error loading SQL",
+			slog.String(logging.KeyTmplLoc, g.templatesLocation),
+			slog.String(logging.KeySqlLoc, g.outputLocation),
+			slog.String(logging.KeyError, err.Error()),
+		)
 		return subcommands.ExitFailure
 	} else if len(tables) == 0 {
-		slog.Info("No tables found", slog.String("sqlLocation", g.sqlLocation))
+		slog.Info("No tables found", slog.String(logging.KeySqlLoc, g.sqlLocation))
 		return subcommands.ExitFailure
 	}
 
 	if g.defaultTemplates {
 		err = generation.RenderWithTemplates(defaultTemplates, tables, g.outputLocation, g.fileExtensionPrefix)
 		if err != nil {
-			slog.Error("Error rendering default templates", slog.String("outputLocation", g.outputLocation), slog.String(logging.KeyError, err.Error()))
+			slog.Error("Error rendering default templates",
+				slog.String(logging.KeyOutputLoc, g.outputLocation),
+				slog.String(logging.KeyError, err.Error()),
+			)
 			return subcommands.ExitFailure
 		}
 	} else {
 		err = generation.RenderTemplates(tables, g.templatesLocation, g.outputLocation, g.fileExtensionPrefix)
 		if err != nil {
-			slog.Error("Error rendering templates", slog.String("templatesLocation", g.templatesLocation), slog.String("outputLocation", g.outputLocation), slog.String(logging.KeyError, err.Error()))
+			slog.Error("Error rendering templates",
+				slog.String(logging.KeyTmplLoc, g.templatesLocation),
+				slog.String(logging.KeyOutputLoc, g.outputLocation),
+				slog.String(logging.KeyError, err.Error()),
+			)
 			return subcommands.ExitFailure
 		}
 	}
 
 	if err := generation.FmtTemplates(g.outputLocation); err != nil {
-		slog.Error("Error formatting templates", slog.String("outputLocation", g.outputLocation), slog.String(logging.KeyError, err.Error()))
+		slog.Error("Error formatting templates",
+			slog.String(logging.KeyOutputLoc, g.outputLocation),
+			slog.String(logging.KeyError, err.Error()),
+		)
 		return subcommands.ExitFailure
 	}
 

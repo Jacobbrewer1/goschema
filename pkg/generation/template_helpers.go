@@ -157,10 +157,11 @@ func uniqueColumnKeys(t *entities.Table) []entities.Key {
 	}
 	for _, key := range t.Keys {
 		k := fmt.Sprint(key.Columns)
-		if _, ok := m[k]; !ok {
-			m[k] = struct{}{}
-			keys = append(keys, key)
+		if _, ok := m[k]; ok {
+			continue
 		}
+		m[k] = struct{}{}
+		keys = append(keys, key)
 	}
 
 	return keys

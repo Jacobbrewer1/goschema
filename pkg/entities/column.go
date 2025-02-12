@@ -53,7 +53,7 @@ func (c *Column) setTypeInfo(tp *types.FieldType) {
 	}
 	c.TypeSize = tp.GetFlen()
 	c.TypePrecision = tp.GetDecimal()
-	if tp.GetType() == mysql.TypeEnum {
+	if tp.GetType() == mysql.TypeEnum { // nolint:revive // Allow for extendability on the method signature
 		c.Type = TypeEnum
 		c.Elements = tp.GetElems()
 	}
@@ -74,10 +74,11 @@ func (c *Column) setOptions(col *ast.ColumnDef) error {
 			c.HasDefault = true
 			switch v := opt.Expr.(type) {
 			case ast.ValueExpr:
-				if v != nil && v.GetValue() != nil {
-					if err := c.setDefaultValue(col, v); err != nil {
-						return err
-					}
+				if v == nil || v.GetValue() == nil {
+					return nil
+				}
+				if err := c.setDefaultValue(col, v); err != nil {
+					return err
 				}
 			default:
 				// We can't convert this type yet, so just expose the expression
