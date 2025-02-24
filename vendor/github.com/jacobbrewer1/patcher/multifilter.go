@@ -2,10 +2,14 @@ package patcher
 
 import "strings"
 
-type MultiFilter interface {
+type Filter interface {
 	Joiner
 	Wherer
-	Add(where any)
+}
+
+type MultiFilter interface {
+	Filter
+	Add(filter any)
 }
 
 type multiFilter struct {
