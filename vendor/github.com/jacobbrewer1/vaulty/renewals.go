@@ -34,7 +34,7 @@ const (
 //
 // ref: https://www.vaultproject.io/docs/enterprise/consistency#vault-1-7-mitigations
 func RenewLease(ctx context.Context, client ClientHandler, name string, credentials *hashiVault.Secret, renewFunc RenewalFunc) error {
-	slog.Debug("renewing lease", slog.String("secret", name))
+	slog.Debug("renewing lease", slog.String(loggingKeySecretName, name))
 
 	currentCreds := credentials
 
@@ -44,7 +44,7 @@ func RenewLease(ctx context.Context, client ClientHandler, name string, credenti
 			return fmt.Errorf("unable to renew lease: %w", err)
 		} else if res&exitRequested != 0 {
 			// Context was cancelled. Program is exiting.
-			slog.Debug("exit requested", slog.String("secret", name))
+			slog.Debug("exit requested", slog.String(loggingKeySecretName, name))
 			return nil
 		}
 
@@ -61,7 +61,7 @@ func RenewLease(ctx context.Context, client ClientHandler, name string, credenti
 			return fmt.Errorf("unable to handle watcher result: %w", err)
 		}
 
-		slog.Info("lease renewed", slog.String("secret", name))
+		slog.Info("lease renewed", slog.String(loggingKeySecretName, name))
 	}
 }
 

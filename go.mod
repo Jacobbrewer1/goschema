@@ -10,7 +10,7 @@ require (
 	github.com/hashicorp/vault/api v1.16.0
 	github.com/huandu/xstrings v1.5.0
 	github.com/jacobbrewer1/patcher v0.1.20
-	github.com/jacobbrewer1/vaulty v0.1.7
+	github.com/jacobbrewer1/vaulty v0.1.8
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/magefile/mage v1.15.0
 	github.com/pingcap/tidb/pkg/parser v0.0.0-20241220080229-acba0cd1e2b0
@@ -43,9 +43,9 @@ require (
 	github.com/hashicorp/go-secure-stdlib/strutil v0.1.2 // indirect
 	github.com/hashicorp/go-sockaddr v1.0.2 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
-	github.com/hashicorp/vault/api/auth/approle v0.8.0 // indirect
-	github.com/hashicorp/vault/api/auth/kubernetes v0.8.0 // indirect
-	github.com/hashicorp/vault/api/auth/userpass v0.8.0 // indirect
+	github.com/hashicorp/vault/api/auth/approle v0.9.0 // indirect
+	github.com/hashicorp/vault/api/auth/kubernetes v0.9.0 // indirect
+	github.com/hashicorp/vault/api/auth/userpass v0.9.0 // indirect
 	github.com/imdario/mergo v0.3.11 // indirect
 	github.com/lithammer/fuzzysearch v1.1.8 // indirect
 	github.com/mattn/go-runewidth v0.0.16 // indirect
@@ -69,12 +69,12 @@ require (
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
-	golang.org/x/crypto v0.32.0 // indirect
-	golang.org/x/net v0.34.0 // indirect
+	golang.org/x/crypto v0.33.0 // indirect
+	golang.org/x/net v0.35.0 // indirect
 	golang.org/x/sys v0.30.0 // indirect
 	golang.org/x/term v0.29.0 // indirect
 	golang.org/x/text v0.22.0 // indirect
-	golang.org/x/time v0.6.0 // indirect
+	golang.org/x/time v0.8.0 // indirect
 	google.golang.org/protobuf v1.36.1 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

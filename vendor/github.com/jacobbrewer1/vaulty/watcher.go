@@ -2,6 +2,7 @@ package vaulty
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 
@@ -26,8 +27,11 @@ func monitorWatcher(ctx context.Context, name string, watcher *hashiVault.Lifeti
 			// RenewCh is a channel that receives a message when a successful
 			// renewal takes place and includes metadata about the renewal.
 		case info := <-watcher.RenewCh():
-			slog.Info("renewal successful", slog.String("renewed_at", info.RenewedAt.String()),
-				slog.String("secret", name), slog.String("lease_duration", fmt.Sprintf("%ds", info.Secret.LeaseDuration)))
+			slog.Info("renewal successful",
+				slog.String(loggingKeyRenewedAt, info.RenewedAt.String()),
+				slog.String(loggingKeySecretName, name),
+				slog.String(loggingKeyLeaseDuration, fmt.Sprintf("%ds", info.Secret.LeaseDuration)),
+			)
 		}
 	}
 }
@@ -35,19 +39,19 @@ func monitorWatcher(ctx context.Context, name string, watcher *hashiVault.Lifeti
 func handleWatcherResult(result renewResult, onExpire ...func()) error {
 	switch {
 	case result&exitRequested != 0:
-		slog.Debug("result is exitRequested", slog.Int("result", int(result)))
+		slog.Debug("result is exitRequested", slog.Int(loggingKeyResult, int(result)))
 		return nil
 	case result&expiring != 0:
-		slog.Debug("result is expiring", slog.Int("result", int(result)))
+		slog.Debug("result is expiring", slog.Int(loggingKeyResult, int(result)))
 		if len(onExpire) == 0 {
-			return fmt.Errorf("no onExpire functions provided")
+			return errors.New("no onExpire functions provided")
 		}
 		for _, f := range onExpire {
 			f()
 		}
 		return nil
 	default:
-		slog.Debug("no action required", slog.Int("result", int(result)))
+		slog.Debug("no action required", slog.Int(loggingKeyResult, int(result)))
 		return nil
 	}
 }

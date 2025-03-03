@@ -103,7 +103,7 @@ func (c *client) renewAuthInfo() {
 
 		return authInfo, nil
 	})
-	if err != nil {
+	if err != nil { // nolint:revive // Traditional error handling
 		slog.Error("unable to renew auth info", slog.String(loggingKeyError, err.Error()))
 		os.Exit(1)
 	}

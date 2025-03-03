@@ -12,7 +12,7 @@ type MockRenewalFunc struct {
 	mock.Mock
 }
 
-// Execute provides a mock function with given fields:
+// Execute provides a mock function with no fields
 func (_m *MockRenewalFunc) Execute() (*api.Secret, error) {
 	ret := _m.Called()
 
