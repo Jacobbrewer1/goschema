@@ -6,6 +6,7 @@ package models
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/jacobbrewer1/goschema/usql"
@@ -199,10 +200,10 @@ func GoschemaMigrationHistoryById(db DB, id int) (*GoschemaMigrationHistory, err
 }
 
 type goschemaMigrationHistoryPKWherer struct {
-	ids []any
+	ids []interface{}
 }
 
-func (m goschemaMigrationHistoryPKWherer) Where() (string, []any) {
+func (m goschemaMigrationHistoryPKWherer) Where() (string, []interface{}) {
 	return "`id` = ?", m.ids
 }
 
@@ -222,8 +223,11 @@ func (m *GoschemaMigrationHistory) Patch(db DB, newT *GoschemaMigrationHistory) 
 		newT,
 		patcher.WithTable(GoschemaMigrationHistoryTableName),
 		patcher.WithWhere(&goschemaMigrationHistoryPKWherer{
-			ids: []any{m.Id},
+			ids: []interface{}{m.Id},
 		}),
+		patcher.WithIgnoredFields(
+			"Id",
+		),
 	)
 	if err != nil {
 		switch {
@@ -248,19 +252,53 @@ func (m *GoschemaMigrationHistory) Patch(db DB, newT *GoschemaMigrationHistory) 
 	return nil
 }
 
-// GetAllGoschemaMigrationHistory retrieves all rows from 'goschema_migration_history' as a slice of GoschemaMigrationHistory.
+// GetAllGoschemaMigrationHistorys retrieves all rows from 'goschema_migration_history' as a slice of GoschemaMigrationHistory.
 //
 // Generated from table 'goschema_migration_history'.
-func GetAllGoschemaMigrationHistory(db DB) ([]*GoschemaMigrationHistory, error) {
+func GetAllGoschemaMigrationHistorys(db DB, filters ...any) ([]*GoschemaMigrationHistory, error) {
 	t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("get_all_" + GoschemaMigrationHistoryTableName))
 	defer t.ObserveDuration()
 
-	const sqlstr = "SELECT `id`, `version`, `action`, `created_at` " +
-		"FROM goschema_migration_history"
+	args := make([]any, 0)
+	builder := new(strings.Builder)
+	builder.WriteString("SELECT `t.id`, `t.version`, `t.action`, `t.created_at`")
 
-	DBLog(sqlstr)
+	if len(filters) > 0 {
+		for _, filter := range filters {
+			if joiner := filter.(patcher.Joiner); joiner != nil {
+				joinSql, joinArgs := joiner.Join()
+				builder.WriteString(joinSql)
+				args = append(args, joinArgs...)
+			}
+		}
+	}
+
+	builder.WriteString("\nFROM goschema_migration_history t")
+
+	if len(filters) > 0 {
+		builder.WriteString("\nWHERE\n")
+		for i, filter := range filters {
+			if where := filter.(patcher.Wherer); where != nil {
+				if i > 0 {
+					wtStr := patcher.WhereTypeAnd
+					if wt, ok := filter.(patcher.WhereTyper); ok {
+						wtStr = wt.WhereType()
+					}
+					builder.WriteString(string(" " + wtStr + " "))
+				}
+				whereSql, whereArgs := where.Where()
+				builder.WriteString(whereSql)
+				builder.WriteString("\n")
+				args = append(args, whereArgs...)
+			}
+		}
+	}
+
+	sqlstr := builder.String()
+	DBLog(sqlstr, args...)
+
 	m := make([]*GoschemaMigrationHistory, 0)
-	if err := db.Select(&m, sqlstr); err != nil {
+	if err := db.Select(&m, sqlstr, args...); err != nil {
 		return nil, fmt.Errorf("failed to get all GoschemaMigrationHistory: %w", err)
 	}
 

@@ -114,7 +114,7 @@ func (s *TypesSuite) TestValidNullFloat64Unmarshal() {
 		s.T().Fatal(err)
 	}
 
-	s.Equal(1.004, ts.Field1.Float64)
+	s.InEpsilon(1.004, ts.Field1.Float64, 0.0001)
 	s.True(ts.Field1.Valid)
 }
 
@@ -160,7 +160,7 @@ func (s *TypesSuite) TestNullExistingValidNullFloat64Unmarshal() {
 		s.T().Fatal(err)
 	}
 
-	s.Equal(float64(0), ts.Field1.Float64)
+	s.InEpsilon(0, ts.Field1.Float64, 0.0001)
 	s.False(ts.Field1.Valid)
 }
 
@@ -264,7 +264,7 @@ func (s *TypesSuite) TestValidNullStringMarshal() {
 		s.T().Fatal(err)
 	}
 
-	s.Equal(`{"Field1":""}`, j)
+	s.JSONEq(`{"Field1":""}`, j)
 }
 
 func (s *TypesSuite) TestValidSetNullStringMarshal() {
@@ -276,7 +276,7 @@ func (s *TypesSuite) TestValidSetNullStringMarshal() {
 		s.T().Fatal(err)
 	}
 
-	s.Equal(`{"Field1":"string"}`, j)
+	s.JSONEq(`{"Field1":"string"}`, j)
 }
 
 func (s *TypesSuite) TestNullExistingValidNullStringUnmarshal() {
@@ -312,42 +312,42 @@ func (s *TypesSuite) TestInvalidNullStringRedisArg() {
 
 func (s *TypesSuite) TestValidNullStringRedisScan() {
 	ts := &testNullString{}
-	s.NoError(ts.Field1.RedisScan("test"))
+	s.Require().NoError(ts.Field1.RedisScan("test"))
 	s.True(ts.Field1.Valid)
 	s.Equal("test", ts.Field1.String)
 }
 
 func (s *TypesSuite) TestValidNullStringRedisScan_bytes() {
 	ts := &testNullString{}
-	s.NoError(ts.Field1.RedisScan([]byte("test")))
+	s.Require().NoError(ts.Field1.RedisScan([]byte("test")))
 	s.True(ts.Field1.Valid)
 	s.Equal("test", ts.Field1.String)
 }
 
 func (s *TypesSuite) TestValidNullStringRedisScan_emptyString() {
 	ts := &testNullString{}
-	s.NoError(ts.Field1.RedisScan(""))
+	s.Require().NoError(ts.Field1.RedisScan(""))
 	s.True(ts.Field1.Valid)
 	s.Equal("", ts.Field1.String)
 }
 
 func (s *TypesSuite) TestValidNullStringRedisScan_emptyBytes() {
 	ts := &testNullString{}
-	s.NoError(ts.Field1.RedisScan([]byte{}))
+	s.Require().NoError(ts.Field1.RedisScan([]byte{}))
 	s.True(ts.Field1.Valid)
 	s.Equal("", ts.Field1.String)
 }
 
 func (s *TypesSuite) TestValidNullStringRedisScan_nil() {
 	ts := &testNullString{}
-	s.NoError(ts.Field1.RedisScan(nil))
+	s.Require().NoError(ts.Field1.RedisScan(nil))
 	s.False(ts.Field1.Valid)
 	s.Equal("", ts.Field1.String)
 }
 
 func (s *TypesSuite) TestValidNullStringRedisScan_invalidType() {
 	ts := &testNullString{}
-	s.EqualError(ts.Field1.RedisScan(123), "unexpected type: int")
+	s.Require().EqualError(ts.Field1.RedisScan(123), "unexpected type: int")
 	s.False(ts.Field1.Valid)
 	s.Equal("", ts.Field1.String)
 }
@@ -382,7 +382,7 @@ func (s *TypesSuite) TestValidNullDurationMarshal() {
 		s.T().Fatal(err)
 	}
 
-	s.Equal(`{"Field1":"00:00:00"}`, j)
+	s.JSONEq(`{"Field1":"00:00:00"}`, j)
 
 }
 
@@ -395,7 +395,7 @@ func (s *TypesSuite) TestValidTrueNullDurationMarshal() {
 		s.T().Fatal(err)
 	}
 
-	s.Equal(`{"Field1":"01:01:01.1"}`, j)
+	s.JSONEq(`{"Field1":"01:01:01.1"}`, j)
 }
 
 func (s *TypesSuite) TestNullExistingValidNullDurationUnmarshal() {
@@ -432,7 +432,7 @@ func (s *TypesSuite) TestZeroDurationMarshal() {
 		s.T().Fatal(err)
 	}
 
-	s.Equal(`{"Field1":"00:00:00"}`, j)
+	s.JSONEq(`{"Field1":"00:00:00"}`, j)
 }
 
 func (s *TypesSuite) TestDurationMarshal() {
@@ -443,7 +443,7 @@ func (s *TypesSuite) TestDurationMarshal() {
 		s.T().Fatal(err)
 	}
 
-	s.Equal(`{"Field1":"01:01:01.1"}`, j)
+	s.JSONEq(`{"Field1":"01:01:01.1"}`, j)
 }
 
 func (s *TypesSuite) TestExistingDurationUnmarshal() {
@@ -537,7 +537,7 @@ func (s *TypesSuite) TestInvalidNullTimeRedisArg() {
 func (s *TypesSuite) TestValidNullTimeRedisScan() {
 	now := time.Now().UTC()
 	ts := &testNullTime{}
-	s.NoError(ts.Field1.RedisScan(strconv.FormatInt(now.Unix(), 10)))
+	s.Require().NoError(ts.Field1.RedisScan(strconv.FormatInt(now.Unix(), 10)))
 	s.True(ts.Field1.Valid)
 	s.Equal(now.Unix(), ts.Field1.Time.Unix())
 }
@@ -545,35 +545,35 @@ func (s *TypesSuite) TestValidNullTimeRedisScan() {
 func (s *TypesSuite) TestValidNullTimeRedisScan_bytes() {
 	now := time.Now().UTC()
 	ts := &testNullTime{}
-	s.NoError(ts.Field1.RedisScan([]byte(strconv.FormatInt(now.Unix(), 10))))
+	s.Require().NoError(ts.Field1.RedisScan([]byte(strconv.FormatInt(now.Unix(), 10))))
 	s.True(ts.Field1.Valid)
 	s.Equal(now.Unix(), ts.Field1.Time.Unix())
 }
 
 func (s *TypesSuite) TestValidNullTimeRedisScan_emptyString() {
 	ts := &testNullTime{}
-	s.NoError(ts.Field1.RedisScan(""))
+	s.Require().NoError(ts.Field1.RedisScan(""))
 	s.False(ts.Field1.Valid)
 	s.Equal(time.Time{}, ts.Field1.Time)
 }
 
 func (s *TypesSuite) TestValidNullTimeRedisScan_emptyBytes() {
 	ts := &testNullTime{}
-	s.NoError(ts.Field1.RedisScan([]byte{}))
+	s.Require().NoError(ts.Field1.RedisScan([]byte{}))
 	s.False(ts.Field1.Valid)
 	s.Equal(time.Time{}, ts.Field1.Time)
 }
 
 func (s *TypesSuite) TestValidNullTimeRedisScan_nil() {
 	ts := &testNullTime{}
-	s.NoError(ts.Field1.RedisScan(nil))
+	s.Require().NoError(ts.Field1.RedisScan(nil))
 	s.False(ts.Field1.Valid)
 	s.Equal(time.Time{}, ts.Field1.Time)
 }
 
 func (s *TypesSuite) TestValidNullTimeRedisScan_invalidType() {
 	ts := &testNullTime{}
-	s.EqualError(ts.Field1.RedisScan(123), "unexpected type: int")
+	s.Require().EqualError(ts.Field1.RedisScan(123), "unexpected type: int")
 	s.False(ts.Field1.Valid)
 	s.Equal(time.Time{}, ts.Field1.Time)
 }

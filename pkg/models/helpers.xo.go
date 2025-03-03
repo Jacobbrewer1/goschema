@@ -97,7 +97,7 @@ func NewLoggableDBTransactionHandler(db Transactioner, l *slog.Logger) *Loggable
 // 1. x is an integer and greater than zero.
 // 2. x not an integer and is not the zero value.
 // Otherwise, returns false
-func IsKeySet(x any) bool {
+func IsKeySet(x interface{}) bool {
 	switch x := x.(type) {
 	case int:
 		return x > 0

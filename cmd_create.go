@@ -79,8 +79,8 @@ func (c *createCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...any) subcom
 	name := fmt.Sprintf("%s_%s", now.Format(migrations.FilePrefix), strings.TrimSpace(c.name))
 	name = strings.ReplaceAll(name, " ", "_")
 
-	upName := fmt.Sprintf("%s.up.sql", name)
-	downName := fmt.Sprintf("%s.down.sql", name)
+	upName := name + ".up.sql"
+	downName := name + "%s.down.sql"
 
 	upPath := fmt.Sprintf("%s/%s", c.outputLocation, upName)
 	downPath := fmt.Sprintf("%s/%s", c.outputLocation, downName)

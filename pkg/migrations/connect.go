@@ -31,5 +31,5 @@ func getConnectionStr() string {
 	if strings.Contains(connStr, "?") {
 		connStr = strings.Split(connStr, "?")[0]
 	}
-	return fmt.Sprintf("%s?timeout=90s&multiStatements=true&parseTime=true", connStr)
+	return connStr + "?timeout=90s&multiStatements=true&parseTime=true"
 }

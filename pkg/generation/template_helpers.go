@@ -267,7 +267,7 @@ func getType(col *entities.Column) string {
 }
 
 func getTags(col *entities.Column) string {
-	tags := fmt.Sprintf("`db:\"%s", col.Name)
+	tags := "`db:\"" + col.Name
 	if col.InPrimaryKey {
 		tags += ",pk"
 	}

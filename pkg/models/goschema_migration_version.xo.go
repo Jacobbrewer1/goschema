@@ -6,6 +6,7 @@ package models
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/jacobbrewer1/patcher"
@@ -21,7 +22,7 @@ const (
 // GoschemaMigrationVersion represents a row from 'goschema_migration_version'.
 type GoschemaMigrationVersion struct {
 	Version   string    `db:"version,pk"`
-	IsCurrent int       `db:"is_current"`
+	IsCurrent bool      `db:"is_current"`
 	CreatedAt time.Time `db:"created_at"`
 }
 
@@ -168,10 +169,10 @@ func GoschemaMigrationVersionByVersion(db DB, version string) (*GoschemaMigratio
 }
 
 type goschemaMigrationVersionPKWherer struct {
-	ids []any
+	ids []interface{}
 }
 
-func (m goschemaMigrationVersionPKWherer) Where() (string, []any) {
+func (m goschemaMigrationVersionPKWherer) Where() (string, []interface{}) {
 	return "`version` = ?", m.ids
 }
 
@@ -191,8 +192,11 @@ func (m *GoschemaMigrationVersion) Patch(db DB, newT *GoschemaMigrationVersion) 
 		newT,
 		patcher.WithTable(GoschemaMigrationVersionTableName),
 		patcher.WithWhere(&goschemaMigrationVersionPKWherer{
-			ids: []any{m.Version},
+			ids: []interface{}{m.Version},
 		}),
+		patcher.WithIgnoredFields(
+			"Version",
+		),
 	)
 	if err != nil {
 		switch {
@@ -217,19 +221,53 @@ func (m *GoschemaMigrationVersion) Patch(db DB, newT *GoschemaMigrationVersion) 
 	return nil
 }
 
-// GetAllGoschemaMigrationVersion retrieves all rows from 'goschema_migration_version' as a slice of GoschemaMigrationVersion.
+// GetAllGoschemaMigrationVersions retrieves all rows from 'goschema_migration_version' as a slice of GoschemaMigrationVersion.
 //
 // Generated from table 'goschema_migration_version'.
-func GetAllGoschemaMigrationVersion(db DB) ([]*GoschemaMigrationVersion, error) {
+func GetAllGoschemaMigrationVersions(db DB, filters ...any) ([]*GoschemaMigrationVersion, error) {
 	t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("get_all_" + GoschemaMigrationVersionTableName))
 	defer t.ObserveDuration()
 
-	const sqlstr = "SELECT `version`, `is_current`, `created_at` " +
-		"FROM goschema_migration_version"
+	args := make([]any, 0)
+	builder := new(strings.Builder)
+	builder.WriteString("SELECT `t.version`, `t.is_current`, `t.created_at`")
 
-	DBLog(sqlstr)
+	if len(filters) > 0 {
+		for _, filter := range filters {
+			if joiner := filter.(patcher.Joiner); joiner != nil {
+				joinSql, joinArgs := joiner.Join()
+				builder.WriteString(joinSql)
+				args = append(args, joinArgs...)
+			}
+		}
+	}
+
+	builder.WriteString("\nFROM goschema_migration_version t")
+
+	if len(filters) > 0 {
+		builder.WriteString("\nWHERE\n")
+		for i, filter := range filters {
+			if where := filter.(patcher.Wherer); where != nil {
+				if i > 0 {
+					wtStr := patcher.WhereTypeAnd
+					if wt, ok := filter.(patcher.WhereTyper); ok {
+						wtStr = wt.WhereType()
+					}
+					builder.WriteString(string(" " + wtStr + " "))
+				}
+				whereSql, whereArgs := where.Where()
+				builder.WriteString(whereSql)
+				builder.WriteString("\n")
+				args = append(args, whereArgs...)
+			}
+		}
+	}
+
+	sqlstr := builder.String()
+	DBLog(sqlstr, args...)
+
 	m := make([]*GoschemaMigrationVersion, 0)
-	if err := db.Select(&m, sqlstr); err != nil {
+	if err := db.Select(&m, sqlstr, args...); err != nil {
 		return nil, fmt.Errorf("failed to get all GoschemaMigrationVersion: %w", err)
 	}
 
