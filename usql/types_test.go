@@ -160,7 +160,7 @@ func (s *TypesSuite) TestNullExistingValidNullFloat64Unmarshal() {
 		s.T().Fatal(err)
 	}
 
-	s.InEpsilon(0, ts.Field1.Float64, 0.0001)
+	s.InDelta(0, ts.Field1.Float64, 0.0001)
 	s.False(ts.Field1.Valid)
 }
 
