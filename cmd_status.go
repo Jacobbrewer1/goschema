@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"log/slog"
 	"os"
+	"strconv"
 
 	"github.com/google/subcommands"
 	"github.com/jacobbrewer1/goschema/pkg/logging"
@@ -55,7 +55,7 @@ func (c *statusCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...any) subcom
 	tableDataStr := make([][]string, 0)
 	tableDataStr = append(tableDataStr, []string{"Version", "Current", "Created At"})
 	for _, v := range versions {
-		tableDataStr = append(tableDataStr, []string{v.Version, fmt.Sprintf("%t", v.IsCurrent == 1), v.CreatedAt.String()})
+		tableDataStr = append(tableDataStr, []string{v.Version, strconv.FormatBool(v.IsCurrent), v.CreatedAt.String()})
 	}
 
 	var tableData pterm.TableData = tableDataStr

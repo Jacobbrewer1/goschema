@@ -193,7 +193,7 @@ func (v *versioning) setCurrentVersion(version string) error {
 
 	newVersion := &models.GoschemaMigrationVersion{
 		Version:   version,
-		IsCurrent: 1,
+		IsCurrent: true,
 		CreatedAt: time.Now().UTC(),
 	}
 

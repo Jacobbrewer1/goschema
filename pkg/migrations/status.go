@@ -8,7 +8,7 @@ import (
 )
 
 func (v *versioning) GetStatus() ([]*models.GoschemaMigrationVersion, error) {
-	versions, err := models.GetAllGoschemaMigrationVersion(v.db)
+	versions, err := models.GetAllGoschemaMigrationVersions(v.db)
 	if err != nil {
 		return nil, fmt.Errorf("error getting goschema migration versions: %w", err)
 	}
