@@ -2,6 +2,7 @@ package vaulty
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -33,7 +34,7 @@ func userPassLogin(client *hashiVault.Client, username, password string) (*hashi
 		return nil, fmt.Errorf("unable to login to userpass auth method: %w", err)
 	}
 	if authInfo == nil {
-		return nil, fmt.Errorf("no auth info was returned after login")
+		return nil, errors.New("no auth info was returned after login")
 	}
 
 	return authInfo, nil

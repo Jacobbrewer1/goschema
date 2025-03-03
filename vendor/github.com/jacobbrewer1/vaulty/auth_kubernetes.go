@@ -2,6 +2,7 @@ package vaulty
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -26,7 +27,7 @@ func kubernetesLogin(client *hashiVault.Client, role string, token auth.LoginOpt
 		return nil, fmt.Errorf("unable to login to kubernetes auth method: %w", err)
 	}
 	if authInfo == nil {
-		return nil, fmt.Errorf("no auth info was returned after login")
+		return nil, errors.New("no auth info was returned after login")
 	}
 
 	client.SetToken(authInfo.Auth.ClientToken)

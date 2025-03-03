@@ -12,7 +12,7 @@ type MockClient struct {
 	mock.Mock
 }
 
-// Client provides a mock function with given fields:
+// Client provides a mock function with no fields
 func (_m *MockClient) Client() *api.Client {
 	ret := _m.Called()
 

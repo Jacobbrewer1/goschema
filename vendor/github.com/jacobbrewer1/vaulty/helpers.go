@@ -3,11 +3,12 @@ package vaulty
 import hashiVault "github.com/hashicorp/vault/api"
 
 func CipherTextFromSecret(transitEncryptSecret *hashiVault.Secret) string {
-	if transitEncryptSecret == nil {
+	switch {
+	case transitEncryptSecret == nil:
 		return ""
-	} else if transitEncryptSecret.Data == nil {
+	case transitEncryptSecret.Data == nil:
 		return ""
-	} else if transitEncryptSecret.Data[TransitKeyCipherText] == nil {
+	case transitEncryptSecret.Data[TransitKeyCipherText] == nil:
 		return ""
 	}
 
