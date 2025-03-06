@@ -169,10 +169,10 @@ func GoschemaMigrationVersionByVersion(db DB, version string) (*GoschemaMigratio
 }
 
 type goschemaMigrationVersionPKWherer struct {
-	ids []interface{}
+	ids []any
 }
 
-func (m goschemaMigrationVersionPKWherer) Where() (string, []interface{}) {
+func (m goschemaMigrationVersionPKWherer) Where() (string, []any) {
 	return "`version` = ?", m.ids
 }
 
@@ -192,7 +192,7 @@ func (m *GoschemaMigrationVersion) Patch(db DB, newT *GoschemaMigrationVersion) 
 		newT,
 		patcher.WithTable(GoschemaMigrationVersionTableName),
 		patcher.WithWhere(&goschemaMigrationVersionPKWherer{
-			ids: []interface{}{m.Version},
+			ids: []any{m.Version},
 		}),
 		patcher.WithIgnoredFields(
 			"Version",
@@ -230,11 +230,12 @@ func GetAllGoschemaMigrationVersions(db DB, filters ...any) ([]*GoschemaMigratio
 
 	args := make([]any, 0)
 	builder := new(strings.Builder)
-	builder.WriteString("SELECT `t.version`, `t.is_current`, `t.created_at`")
+	builder.WriteString("SELECT t.version, t.is_current, t.created_at")
 
 	if len(filters) > 0 {
 		for _, filter := range filters {
-			if joiner := filter.(patcher.Joiner); joiner != nil {
+			joiner, ok := filter.(patcher.Joiner)
+			if ok {
 				joinSql, joinArgs := joiner.Join()
 				builder.WriteString(joinSql)
 				args = append(args, joinArgs...)
@@ -247,7 +248,8 @@ func GetAllGoschemaMigrationVersions(db DB, filters ...any) ([]*GoschemaMigratio
 	if len(filters) > 0 {
 		builder.WriteString("\nWHERE\n")
 		for i, filter := range filters {
-			if where := filter.(patcher.Wherer); where != nil {
+			where, ok := filter.(patcher.Wherer)
+			if ok {
 				if i > 0 {
 					wtStr := patcher.WhereTypeAnd
 					if wt, ok := filter.(patcher.WhereTyper); ok {
