@@ -200,10 +200,10 @@ func GoschemaMigrationHistoryById(db DB, id int) (*GoschemaMigrationHistory, err
 }
 
 type goschemaMigrationHistoryPKWherer struct {
-	ids []interface{}
+	ids []any
 }
 
-func (m goschemaMigrationHistoryPKWherer) Where() (string, []interface{}) {
+func (m goschemaMigrationHistoryPKWherer) Where() (string, []any) {
 	return "`id` = ?", m.ids
 }
 
@@ -223,7 +223,7 @@ func (m *GoschemaMigrationHistory) Patch(db DB, newT *GoschemaMigrationHistory) 
 		newT,
 		patcher.WithTable(GoschemaMigrationHistoryTableName),
 		patcher.WithWhere(&goschemaMigrationHistoryPKWherer{
-			ids: []interface{}{m.Id},
+			ids: []any{m.Id},
 		}),
 		patcher.WithIgnoredFields(
 			"Id",
@@ -261,11 +261,12 @@ func GetAllGoschemaMigrationHistorys(db DB, filters ...any) ([]*GoschemaMigratio
 
 	args := make([]any, 0)
 	builder := new(strings.Builder)
-	builder.WriteString("SELECT `t.id`, `t.version`, `t.action`, `t.created_at`")
+	builder.WriteString("SELECT t.id, t.version, t.action, t.created_at")
 
 	if len(filters) > 0 {
 		for _, filter := range filters {
-			if joiner := filter.(patcher.Joiner); joiner != nil {
+			joiner, ok := filter.(patcher.Joiner)
+			if ok {
 				joinSql, joinArgs := joiner.Join()
 				builder.WriteString(joinSql)
 				args = append(args, joinArgs...)
@@ -278,7 +279,8 @@ func GetAllGoschemaMigrationHistorys(db DB, filters ...any) ([]*GoschemaMigratio
 	if len(filters) > 0 {
 		builder.WriteString("\nWHERE\n")
 		for i, filter := range filters {
-			if where := filter.(patcher.Wherer); where != nil {
+			where, ok := filter.(patcher.Wherer)
+			if ok {
 				if i > 0 {
 					wtStr := patcher.WhereTypeAnd
 					if wt, ok := filter.(patcher.WhereTyper); ok {
