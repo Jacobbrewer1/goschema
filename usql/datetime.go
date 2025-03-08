@@ -1,6 +1,7 @@
 package usql
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 	"time"
@@ -41,15 +42,25 @@ func (d *DateTime) Scan(src any) error {
 	case time.Time:
 		*d = DateTime{t}
 	case string:
+		srcStr, ok := src.(string)
+		if !ok {
+			return errors.New("string type assertion failed")
+		}
+
 		// Parse the time.
-		parsedT, err := time.Parse(time.RFC3339, src.(string))
+		parsedT, err := time.Parse(time.RFC3339, srcStr)
 		if err != nil {
 			return fmt.Errorf("%s is not in the RFC3339 format", t)
 		}
 		*d = DateTime{parsedT}
 	case []uint8:
+		sliceStr, ok := src.([]uint8)
+		if !ok {
+			return errors.New("[]uint8 type assertion failed")
+		}
+
 		// Parse the time.
-		parsedT, err := time.Parse(time.DateTime, string(src.([]uint8)))
+		parsedT, err := time.Parse(time.DateTime, string(sliceStr))
 		if err != nil {
 			return fmt.Errorf("%s is not in the RFC3339 format", t)
 		}
