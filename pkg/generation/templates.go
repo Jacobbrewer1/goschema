@@ -135,7 +135,13 @@ func renderHelpers(fs embed.FS, outputLoc, fileExtensionPrefix string) error {
 
 	errs.Range(func(key, value any) bool {
 		if value != nil {
-			slog.Error("Error rendering helpers", slog.String(logging.KeyError, value.(error).Error()))
+			valErr, ok := value.(error)
+			if !ok {
+				slog.Error("Error rendering helpers", slog.String(logging.KeyError, "error not of type error"))
+				return true
+			}
+
+			slog.Error("Error rendering helpers", slog.String(logging.KeyError, valErr.Error()))
 		}
 
 		return true
