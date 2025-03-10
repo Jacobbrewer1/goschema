@@ -38,13 +38,11 @@ type (
 )
 
 type client struct {
-	ctx context.Context
-
+	ctx       context.Context
+	l         *slog.Logger
 	kvv2Mount string
-
-	auth loginFunc
-
-	config *hashiVault.Config
+	auth      loginFunc
+	config    *hashiVault.Config
 
 	// Below are set on initialization
 	v         *hashiVault.Client
@@ -54,6 +52,7 @@ type client struct {
 func NewClient(opts ...ClientOption) (Client, error) {
 	c := &client{
 		ctx:       context.Background(),
+		l:         slog.Default(),
 		kvv2Mount: "",
 		auth:      nil,
 		config:    hashiVault.DefaultConfig(),
@@ -93,7 +92,7 @@ func NewClient(opts ...ClientOption) (Client, error) {
 }
 
 func (c *client) renewAuthInfo() {
-	err := RenewLease(c.ctx, c, "auth", c.authCreds, func() (*hashiVault.Secret, error) {
+	err := RenewLease(c.ctx, c.l, c, "auth", c.authCreds, func() (*hashiVault.Secret, error) {
 		authInfo, err := c.auth(c.v)
 		if err != nil {
 			return nil, fmt.Errorf("unable to renew auth info: %w", err)
@@ -104,7 +103,7 @@ func (c *client) renewAuthInfo() {
 		return authInfo, nil
 	})
 	if err != nil { // nolint:revive // Traditional error handling
-		slog.Error("unable to renew auth info", slog.String(loggingKeyError, err.Error()))
+		c.l.Error("unable to renew auth info", slog.String(loggingKeyError, err.Error()))
 		os.Exit(1)
 	}
 }

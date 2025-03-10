@@ -3,6 +3,7 @@ package vaulty
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"os"
 
 	hashiVault "github.com/hashicorp/vault/api"
@@ -11,9 +12,17 @@ import (
 
 type ClientOption func(c *client)
 
+// WithContext sets the context for the client.
 func WithContext(ctx context.Context) ClientOption {
 	return func(c *client) {
 		c.ctx = ctx
+	}
+}
+
+// WithLogger sets the logger for the client.
+func WithLogger(l *slog.Logger) ClientOption {
+	return func(c *client) {
+		c.l = l
 	}
 }
 
