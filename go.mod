@@ -1,7 +1,7 @@
 module github.com/jacobbrewer1/goschema
 
 go 1.23
-toolchain go1.24.0
+toolchain go1.24.1
 
 require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
@@ -9,7 +9,7 @@ require (
 	github.com/google/subcommands v1.2.0
 	github.com/hashicorp/vault/api v1.16.0
 	github.com/huandu/xstrings v1.5.0
-	github.com/jacobbrewer1/patcher v0.1.20
+	github.com/jacobbrewer1/patcher v0.1.21
 	github.com/jacobbrewer1/vaulty v0.1.10
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/magefile/mage v1.15.0
