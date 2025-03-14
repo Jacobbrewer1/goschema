@@ -95,8 +95,8 @@ github.com/huandu/xstrings v1.5.0 h1:2ag3IFq9ZDANvthTwTiqSSZLjDc+BedvHPAp5tJy2TI
 github.com/huandu/xstrings v1.5.0/go.mod h1:y5/lhBue+AyNmUVz9RLU9xbLR0o4KIIExikq4ovT0aE=
 github.com/imdario/mergo v0.3.11 h1:3tnifQM4i+fbajXKBHXWEH+KvNHqojZ778UH75j3bGA=
 github.com/imdario/mergo v0.3.11/go.mod h1:jmQim1M+e3UYxmgPu/WyfjB3N3VflVyUjjjwH0dnCYA=
-github.com/jacobbrewer1/patcher v0.1.20 h1:iPMAaZCAqSjOZU7BIfq2dQN/GQu+MeieLvYrK6g2jLg=
-github.com/jacobbrewer1/patcher v0.1.20/go.mod h1:Qf1Ivimb6bKRLqMKUmveBGymd18o+Gc1Av8jvuP5Egs=
+github.com/jacobbrewer1/patcher v0.1.21 h1:n+PsOX4aoCHhL0MVRNb9X6yGpzUytSde+Gf3rF2Y5Xg=
+github.com/jacobbrewer1/patcher v0.1.21/go.mod h1:U+a0VBXB4BNL/KqBjkZdiTZ5y4jo9iShsACRSyytTNQ=
 github.com/jacobbrewer1/vaulty v0.1.10 h1:8GT7fzQsZKh2hd4cY1OqYXXJVWb5f26Jab0KMKvJ15U=
 github.com/jacobbrewer1/vaulty v0.1.10/go.mod h1:VYnjOeOhXuN1nlUHhsmN3soWjVmUBIRmnJj6sKC3EIo=
 github.com/jmoiron/sqlx v1.4.0 h1:1PLqN7S1UYp5t4SrVVnt4nUVNemrDAtxlulVe+Qgm3o=
