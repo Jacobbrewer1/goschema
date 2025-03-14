@@ -10,7 +10,7 @@ require (
 	github.com/hashicorp/vault/api v1.16.0
 	github.com/huandu/xstrings v1.5.0
 	github.com/jacobbrewer1/patcher v0.1.20
-	github.com/jacobbrewer1/vaulty v0.1.8
+	github.com/jacobbrewer1/vaulty v0.1.10
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/magefile/mage v1.15.0
 	github.com/pingcap/tidb/pkg/parser v0.0.0-20241220080229-acba0cd1e2b0

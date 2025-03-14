@@ -33,25 +33,25 @@ const (
 // this which are outside the scope of this code sample.
 //
 // ref: https://www.vaultproject.io/docs/enterprise/consistency#vault-1-7-mitigations
-func RenewLease(ctx context.Context, client ClientHandler, name string, credentials *hashiVault.Secret, renewFunc RenewalFunc) error {
-	slog.Debug("renewing lease", slog.String(loggingKeySecretName, name))
+func RenewLease(ctx context.Context, l *slog.Logger, client ClientHandler, name string, credentials *hashiVault.Secret, renewFunc RenewalFunc) error {
+	l.Debug("renewing lease", slog.String(loggingKeySecretName, name))
 
 	currentCreds := credentials
 
 	for {
-		res, err := leaseRenew(ctx, client, name, currentCreds)
+		res, err := leaseRenew(ctx, l, client, name, currentCreds)
 		if err != nil {
 			return fmt.Errorf("unable to renew lease: %w", err)
 		} else if res&exitRequested != 0 {
 			// Context was cancelled. Program is exiting.
-			slog.Debug("exit requested", slog.String(loggingKeySecretName, name))
+			l.Debug("exit requested", slog.String(loggingKeySecretName, name))
 			return nil
 		}
 
-		err = handleWatcherResult(res, func() {
+		err = handleWatcherResult(l, res, func() {
 			newCreds, err := renewFunc()
 			if err != nil {
-				slog.Error("unable to renew credentials", slog.String(loggingKeyError, err.Error()))
+				l.Error("unable to renew credentials", slog.String(loggingKeyError, err.Error()))
 				os.Exit(1) // Forces new credentials to be fetched
 			}
 
@@ -61,11 +61,11 @@ func RenewLease(ctx context.Context, client ClientHandler, name string, credenti
 			return fmt.Errorf("unable to handle watcher result: %w", err)
 		}
 
-		slog.Info("lease renewed", slog.String(loggingKeySecretName, name))
+		l.Info("lease renewed", slog.String(loggingKeySecretName, name))
 	}
 }
 
-func leaseRenew(ctx context.Context, client ClientHandler, name string, credentials *hashiVault.Secret) (renewResult, error) {
+func leaseRenew(ctx context.Context, l *slog.Logger, client ClientHandler, name string, credentials *hashiVault.Secret) (renewResult, error) {
 	credentialsWatcher, err := client.Client().NewLifetimeWatcher(&hashiVault.LifetimeWatcherInput{
 		Secret:    credentials,
 		Increment: 3600,
@@ -77,7 +77,7 @@ func leaseRenew(ctx context.Context, client ClientHandler, name string, credenti
 	go credentialsWatcher.Start()
 	defer credentialsWatcher.Stop()
 
-	res, err := monitorWatcher(ctx, name, credentialsWatcher)
+	res, err := monitorWatcher(ctx, l, name, credentialsWatcher)
 	if err != nil {
 		return renewError, fmt.Errorf("unable to monitor watcher: %w", err)
 	}

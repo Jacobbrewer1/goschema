@@ -9,7 +9,7 @@ import (
 	hashiVault "github.com/hashicorp/vault/api"
 )
 
-func monitorWatcher(ctx context.Context, name string, watcher *hashiVault.LifetimeWatcher) (renewResult, error) {
+func monitorWatcher(ctx context.Context, l *slog.Logger, name string, watcher *hashiVault.LifetimeWatcher) (renewResult, error) {
 	for {
 		select {
 		case <-ctx.Done():
@@ -27,7 +27,7 @@ func monitorWatcher(ctx context.Context, name string, watcher *hashiVault.Lifeti
 			// RenewCh is a channel that receives a message when a successful
 			// renewal takes place and includes metadata about the renewal.
 		case info := <-watcher.RenewCh():
-			slog.Info("renewal successful",
+			l.Info("renewal successful",
 				slog.String(loggingKeyRenewedAt, info.RenewedAt.String()),
 				slog.String(loggingKeySecretName, name),
 				slog.String(loggingKeyLeaseDuration, fmt.Sprintf("%ds", info.Secret.LeaseDuration)),
@@ -36,13 +36,13 @@ func monitorWatcher(ctx context.Context, name string, watcher *hashiVault.Lifeti
 	}
 }
 
-func handleWatcherResult(result renewResult, onExpire ...func()) error {
+func handleWatcherResult(l *slog.Logger, result renewResult, onExpire ...func()) error {
 	switch {
 	case result&exitRequested != 0:
-		slog.Debug("result is exitRequested", slog.Int(loggingKeyResult, int(result)))
+		l.Debug("result is exitRequested", slog.Int(loggingKeyResult, int(result)))
 		return nil
 	case result&expiring != 0:
-		slog.Debug("result is expiring", slog.Int(loggingKeyResult, int(result)))
+		l.Debug("result is expiring", slog.Int(loggingKeyResult, int(result)))
 		if len(onExpire) == 0 {
 			return errors.New("no onExpire functions provided")
 		}
@@ -51,7 +51,7 @@ func handleWatcherResult(result renewResult, onExpire ...func()) error {
 		}
 		return nil
 	default:
-		slog.Debug("no action required", slog.Int(loggingKeyResult, int(result)))
+		l.Debug("no action required", slog.Int(loggingKeyResult, int(result)))
 		return nil
 	}
 }
