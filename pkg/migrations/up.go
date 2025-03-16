@@ -216,7 +216,6 @@ func orderFiles(files []os.DirEntry) ([]os.DirEntry, error) {
 				continue
 			}
 			ordered = append(ordered, f)
-			return ordered, nil
 		}
 	}
 
