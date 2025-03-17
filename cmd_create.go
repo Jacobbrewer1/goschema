@@ -80,7 +80,7 @@ func (c *createCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...any) subcom
 	name = strings.ReplaceAll(name, " ", "_")
 
 	upName := name + ".up.sql"
-	downName := name + "%s.down.sql"
+	downName := name + ".down.sql"
 
 	upPath := fmt.Sprintf("%s/%s", c.outputLocation, upName)
 	downPath := fmt.Sprintf("%s/%s", c.outputLocation, downName)
