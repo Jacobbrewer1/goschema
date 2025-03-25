@@ -5,7 +5,7 @@ toolchain go1.24.1
 
 require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
-	github.com/go-sql-driver/mysql v1.9.0
+	github.com/go-sql-driver/mysql v1.9.1
 	github.com/google/subcommands v1.2.0
 	github.com/hashicorp/vault/api v1.16.0
 	github.com/huandu/xstrings v1.5.0
