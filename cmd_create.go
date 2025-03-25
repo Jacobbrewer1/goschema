@@ -48,11 +48,11 @@ func (c *createCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...any) subcom
 		return subcommands.ExitUsageError
 	}
 
-	switch {
-	case c.outputLocation == "":
+	switch c.outputLocation {
+	case "":
 		slog.Error("Output location is required")
 		return subcommands.ExitUsageError
-	case c.outputLocation == ".":
+	case ".":
 		// Get the directory that called the command
 		dir, err := os.Getwd()
 		if err != nil {

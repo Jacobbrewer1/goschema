@@ -285,7 +285,7 @@ func (s *TypesSuite) TestNullExistingValidNullStringUnmarshal() {
 		s.T().Fatal(err)
 	}
 
-	s.Equal("", ts.Field1.String)
+	s.Empty(ts.Field1.String)
 	s.False(ts.Field1.Valid)
 }
 
@@ -328,28 +328,28 @@ func (s *TypesSuite) TestValidNullStringRedisScan_emptyString() {
 	ts := &testNullString{}
 	s.Require().NoError(ts.Field1.RedisScan(""))
 	s.True(ts.Field1.Valid)
-	s.Equal("", ts.Field1.String)
+	s.Empty(ts.Field1.String)
 }
 
 func (s *TypesSuite) TestValidNullStringRedisScan_emptyBytes() {
 	ts := &testNullString{}
 	s.Require().NoError(ts.Field1.RedisScan([]byte{}))
 	s.True(ts.Field1.Valid)
-	s.Equal("", ts.Field1.String)
+	s.Empty(ts.Field1.String)
 }
 
 func (s *TypesSuite) TestValidNullStringRedisScan_nil() {
 	ts := &testNullString{}
 	s.Require().NoError(ts.Field1.RedisScan(nil))
 	s.False(ts.Field1.Valid)
-	s.Equal("", ts.Field1.String)
+	s.Empty(ts.Field1.String)
 }
 
 func (s *TypesSuite) TestValidNullStringRedisScan_invalidType() {
 	ts := &testNullString{}
 	s.Require().EqualError(ts.Field1.RedisScan(123), "unexpected type: int")
 	s.False(ts.Field1.Valid)
-	s.Equal("", ts.Field1.String)
+	s.Empty(ts.Field1.String)
 }
 
 func (s *TypesSuite) TestValidNullDurationUnmarshal() {
