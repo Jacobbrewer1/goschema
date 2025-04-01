@@ -32,6 +32,26 @@ func (m *{{ $struct }}) Insert(db DB) error {
     {{- end }}
 }
 
+func (m *{{ $struct }}) Insert{{ $struct }}WithPK(db DB) error {
+    if !m.IsPrimaryKeySet() {
+        return ErrNoPK
+    }
+
+    t := prometheus.NewTimer(DatabaseLatency.WithLabelValues("insert_with_ids_" + {{ $struct | structify }}TableName))
+    defer t.ObserveDuration()
+
+    {{ $cols := .Columns -}}
+    const sqlstr = "INSERT INTO {{ .Name }} (" +
+        "{{ range $i, $column := $cols }}{{ if $i }}, {{ end }}`{{ $column.Name }}`{{ end }}" +
+        ") VALUES (" +
+        "{{ range $i, $column := $cols }}{{ if $i }}, {{ end }}?{{ end }}" +
+        ")"
+
+    DBLog(sqlstr, {{ range $i, $column := $cols }}{{ if $i }}, {{ end }}m.{{ $column.Name | structify }}{{ end }})
+    _, err := db.Exec(sqlstr, {{ range $i, $column := $cols }}{{ if $i }}, {{ end }}m.{{ $column.Name | structify }}{{ end }})
+    return err
+}
+
 func InsertMany{{ $struct }}s(db DB, ms ...*{{ $struct }}) error {
     if len(ms) == 0 {
         return nil
