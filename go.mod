@@ -1,11 +1,12 @@
 module github.com/jacobbrewer1/goschema
 
-go 1.23
+go 1.24
+
 toolchain go1.24.1
 
 require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
-	github.com/go-sql-driver/mysql v1.9.2
+	github.com/go-sql-driver/mysql v1.9.3
 	github.com/google/subcommands v1.2.0
 	github.com/hashicorp/vault/api v1.16.0
 	github.com/huandu/xstrings v1.5.0
