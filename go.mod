@@ -1,6 +1,7 @@
 module github.com/jacobbrewer1/goschema
 
-go 1.23
+go 1.24
+
 toolchain go1.24.1
 
 require (
@@ -16,7 +17,7 @@ require (
 	github.com/pingcap/tidb/pkg/parser v0.0.0-20241220080229-acba0cd1e2b0
 	github.com/prometheus/client_golang v1.21.1
 	github.com/pterm/pterm v0.12.80
-	github.com/stretchr/testify v1.10.0
+	github.com/stretchr/testify v1.11.1
 )
 
 require (
